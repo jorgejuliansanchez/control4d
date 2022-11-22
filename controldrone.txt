@@ -1,0 +1,5 @@
+alcance  10 km
+duracion bateria 31 minutos
+la función Regresar a casa reset
+iniciar
+apagar(Hibernar)

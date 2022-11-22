@@ -1,0 +1,1797 @@
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>EditorC4D</title>
+        <!--Obra : EditorC4D : Software para ilustrar en la Web, Autor: Jorge Julian Sanchez Velez, DNDA: Registro nacional de Derechos de autor Libro 13 Tomo 32 Partida 433 20120320 -->
+        <meta name="Autor"    content="jorge4d"/>
+        <meta name="Latitud"  content="6.2529001235962"/>
+        <meta name="Longitud" content="-75.564598083496"/>
+        <meta name="Altitud"  content="1600.00"/>
+        <meta name="Momento"  content="2022/01/24_10:17:00"/>
+        <meta name="Email"    content="jorgejuliasanchez@gmail.com"/>
+        <meta name="keywords" content="Editor SVG Cuarta Dimension"/>
+        <meta name="description" content="SocioSistema de ilustracion vectorial"/>
+        <meta http-equiv="Expires" content="Tue, 25 Abr 1990 09:30:00 -0700"/>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+        <meta http-equiv="encoding" content="utf-8"/>
+        <link rel="shortcut icon" href="EditorC4D.ico"/>
+        <style>
+            polyline {
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+
+            .borde333 {
+                fill: none;
+                stroke: black;
+                stroke-width: 0.333;
+            }
+
+            .borde1 {
+                fill: none;
+                stroke: black;
+                stroke-width: 1;
+            }
+
+            .base {
+                fill: none;
+                stroke: black;
+                stroke-width: 1;
+            }
+
+            .flecha {
+                fill: none;
+                stroke: black;
+                stroke-width: 1;
+            }
+
+            .azul {
+                fill: blue;
+                stroke: blue;
+                stroke-width: 1;
+            }
+
+            .verde {
+                fill: green;
+                stroke: green;
+                stroke-width: 1;
+            }
+
+            .verde1 {
+                fill: none;
+                stroke: green;
+                stroke-width: 1;
+            }
+
+            .lima {
+                fill: lime;
+                stroke: lime;
+                stroke-width: 1;
+            }
+
+            .negro {
+                fill: black;
+                stroke: black;
+                stroke-width: 1;
+            }
+
+            .blanco {
+                fill: white;
+                stroke: white;
+                stroke-width: 1;
+            }
+
+            .nada {
+                fill: none;
+                stroke: black;
+                stroke-width: 1;
+            }
+
+            .vidrio {
+                fill: none;
+                stroke: black;
+                stroke-width: 1;
+            }
+
+            .chupa {
+                fill: blue;
+                stroke: blue;
+                stroke-width: 1;
+            }
+
+            .plata {
+                fill: silver;
+                stroke: rgb(128,128,128);
+                stroke-width: 1;
+            }
+
+            .boton {
+                position: absolute;
+                background-color: #d7d7d7;
+                cursor: pointer;
+                cursor: hand;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                border-radius: 5px;
+                width: 64px;
+                height: 64px;
+            }
+
+            .boton:hover {
+                background-color: rgb(128,128,128);
+            }
+
+            .bactivo {
+                position: absolute;
+                background-color: yellow;
+                cursor: pointer;
+                cursor: hand;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                border-radius: 5px;
+                width: 64px;
+                height: 64px;
+            }
+        </style>
+    </head>
+    <body style="margin: 0; padding: 0;">
+        <div id="zona4d" style="position: absolute; display: block; left: 0px; top: 512px;width: 576px;height: 64px;"> 
+            <input id="incolorlleno" type="color" value='#FFFFFF' onchange="actualiza4d()" />
+            <input id="chklleno"  type='checkbox' onclick="actualiza4d()" >
+            <input id="incolorborde" type="color" onchange="actualiza4d()" />
+            <input id="chkborde"  type='checkbox' onclick="actualiza4d()" checked>
+            <input id="textoin" name="textoin" type="text" value="" onchange="actualiza4d()" placeholder="Texto" size="20" />
+            <select id="tipotexto" onchange="actualiza4d()">
+                <option id='Arial'>Arial</option>
+                <option id='monospace'>monospace</option>
+                <option id='Verdana'>Verdana</option>
+                <option id='Helvetica'>Helvetica</option>
+                <option id='Tahoma'>Tahoma</option>
+                <option id='Trebuchet MS'>Trebuchet MS</option>
+                <option id='Times_New_Roman'>Times New Roman</option>
+                <option id='Georgia'>Georgia</option>
+                <option id='Garamond'>Garamond</option>
+                <option id='Courier_New'>Courier New</option>
+                <option id='Brush_Script_MT'>Brush Script MT</option>
+            </select>
+            <select id='fuentesize' onchange="actualiza4d()">
+                <option id='p2px'>2px</option>
+                <option id='p4px'>4px</option>
+                <option id='p8px'>8px</option>
+                <option id='p10px'>10px</option>
+                <option id='p12px' selected>12px</option>
+                <option id='p16px'>16px</option>
+                <option id='p20px'>20px</option>
+                <option id='p24px'>24px</option>
+                <option id='p30px'>30px</option>
+                <option id='p32px'>32px</option>
+                <option id='p40px'>40px</option>
+                <option id='p50px'>40px</option>
+                <option id='p60px'>60px</option>
+                <option id='p60px'>64px</option>
+                <option id='p80px'>92px</option>
+            </select>
+        </div>
+        <input id="imagenes" type="file" size="1" name="imagenes" onChange="recorta();" style="display:none;"/>
+        <input id="objetos4d" type="file" onChange="leeXML();" style="display:none;"/>
+        <img id="im" style=" position:absolute; top: 0px;  left: 0px;"/>
+        <canvas id='myCanvas4D' width='512px' height='512px' style="position: absolute; display: block; left: 576px; top: 0px;width: 512px;height: 512px;"></canvas>
+        <canvas id='canvas64' class="boton" onclick="suiche4d('myCanvas4D')" width='64px' height='64px' style="left: 512px; top: 0px;width:  64px;height:  64px;"></canvas>
+        <svg id="panel4d" viewBox="0 0 512 512" style="position: absolute; left: 0px;   top: 0px; width: 512px; height: 512px;">
+            <defs>            
+                <linearGradient id="grado" x1="0%" y1="0%" x2="100%" y2="0%">              
+                    <stop offset="0%" style="stop-color: #ffffff;stop-opacity:1" />              
+                    <stop offset="100%" style="stop-color: #000000;stop-opacity:1" />            
+                </linearGradient>            
+                <linearGradient id="gradn" gradientTransform="rotate(90)" x1="0%" y1="0%" x2="100%" y2="0%">                
+                    <stop offset="0%" style="stop-color: #ffffff;stop-opacity:1" />                
+                    <stop offset="100%" style="stop-color: #000000 ;stop-opacity:1" />              
+                </linearGradient>                         
+                <linearGradient id="grads"  gradientTransform="rotate(90)" x1="0%" y1="0%" x2="100%" y2="0%">                
+                    <stop offset="0%" style="stop-color: #000000;stop-opacity:1" />                
+                    <stop offset="100%" style="stop-color: #ffffff;stop-opacity:1" />              
+                </linearGradient>            
+                <linearGradient id="grade" x1="0%" y1="0%" x2="100%" y2="0%">                
+                    <stop offset="0%" style="stop-color: #000000;stop-opacity:1" />                
+                    <stop offset="100%" style="stop-color: #ffffff;stop-opacity:1" />              
+                </linearGradient>                       
+            </defs> 
+            <g id="gintro" style="display: block;">
+                <polyline id="crop" class="borde1" points="222,222 290,222 290,290 222,290 222,222"></polyline>
+                <polyline id="Marcoa" class="borde1" points="0,0 512,0 512,512 0,512 0,0"></polyline>
+                <polyline id="ejet" class="borde333" points="0,0 64,64"></polyline>
+                <polyline id="ejeu" class="borde333" points="512,0 448,64"></polyline>
+                <polyline id="ejev" class="borde333" points="512,512 448,448"></polyline>
+                <polyline id="ejew" class="borde333" points="0,512 64,448"></polyline>
+                <polyline id="fu" class="borde1" points="256,252 256,255"></polyline>
+                <polyline id="fr" class="borde1" points="257,256 260,256"></polyline>
+                <polyline id="fd" class="borde1" points="256,260 256,257"></polyline>
+                <polyline id="fl" class="borde1" points="252,256 255,256"></polyline>
+                <polyline id="FF" class="borde1" points="0,0 512,0 512,512 0,512 0,0"></polyline>
+                <polyline id="CC" class="borde333" points="64,64 448,64 448,448 64,448 64,64"></polyline>
+            </g>
+        </svg>
+        <svg id="b1" onclick="imagen4d()"   class="boton" viewBox="0 0 64 64" style="top:   0px; left: 512px;">
+            <g id="gimagen" style="display: block;">
+                <polyline class="negro" points="64,0 60,4 60,59 64,64 59,60 4,60 0,64 64,64 64,0"></polyline>
+                <polyline class="azul" points="4,4 59,4 59,32 4,32 4,4"></polyline>
+                <polyline class="verde" points="4,32 24,14 59,59 4,59 4,32"></polyline>
+                <polyline class="lima" points="5,59 50,20 59,32 59,59 5,59"></polyline>
+                <circle cx='36' cy='10' r='4' style='stroke:yellow;fill:yellow;'></circle>
+            </g>
+        </svg>
+        <svg id="b2" onclick="poly4d()"     class="boton" viewBox="0 0 64 64" style="top:  64px; left: 512px;">
+            <polyline class="negro" points="64,0 60,4 60,59 64,64 59,60 4,60 0,64 64,64 64,0"></polyline>
+            <polyline id="pol" class="blanco" points="4,4 59,4 59,59 4,59 4,4"></polyline>
+            <polyline points="14,22 33,12 50,32 40,50 22,46 14,22" style="fill: none; stroke: black; stroke-width: 1;"></polyline>
+            <polyline points="12,20 15,20 15,24 12,24  12,20" style="fill: none; stroke: blue; stroke-width: 1;"></polyline>
+        </svg>
+        <svg id="b3" onclick="colorpic4d()" class="boton" viewBox="0 0 64 64" style="top: 128px; left: 512px;">
+            <polyline class="negro" points="64,0 60,4 60,59 64,64 59,60 4,60 0,64 64,64 64,0"></polyline>
+            <polyline class="blanco" points="4,4 59,4 59,59 4,59 4,4"></polyline>
+            <polyline id="pat" class="verde" points="14,14 50,14 50,50 14,50 14,14"></polyline>
+            <polyline class="vidrio" points="32,22,32,20,39,13,41,15,34,22,32,22"></polyline>
+            <polyline class="chupa" points="45,9 45,12 43,14 43,16 42,17 37,12 38,11 39,11 42,8 45,9 "></polyline>
+        </svg>
+        <svg id="b4" onclick="colorear4d()" class="boton" viewBox="0 0 64 64" style="top: 192px; left: 512px;">
+            <polyline class="negro" points="64,0 60,4 60,59 64,64 59,60 4,60 0,64 64,64 64,0"></polyline>
+            <polyline class="blanco" points="4,4 59,4 59,59 4,59 4,4"></polyline>
+            <polyline class="verde" points="16,16 26,16 26,26 16,26 16,16"></polyline>
+            <polyline class="nada" points="34,32 44,32 44,42 34,42 34,32"></polyline>
+        </svg>
+        <svg id="b5" onclick="atras4d()"    class="boton" viewBox="0 0 64 64" style="top: 256px; left: 512px;">
+            <polyline class="negro" points="64,0 60,4 60,59 64,64 59,60 4,60 0,64 64,64 64,0"></polyline>
+            <polyline class="blanco" points="4,4 59,4 59,59 4,59 4,4"></polyline>
+            <polyline class="verde" points="16,16 52,16 52,52 16,52 16,16"></polyline>
+            <polyline class="plata" points="12,12 48,12 48,48 12,48 12,12"></polyline>
+        </svg>
+        <svg id="b6" onclick="abrir4d()"    class="boton" viewBox="0 0 64 64" style="top: 320px; left: 512px;">
+            <polyline class="negro" points="64,0 60,4 60,59 64,64 59,60 4,60 0,64 64,64 64,0"></polyline>
+            <polyline class="blanco" points="4,4 59,4 59,59 4,59 4,4"></polyline>
+            <polyline class="verde" points="14,50 50,50 50,56 14,56 14,50"></polyline>
+            <polyline class="verde" points="32,6 50,26 40,26 40,46 24,46 24,26 14,26 32,6"></polyline>
+        </svg>
+        <svg id="b7" onclick="salv4d()"     class="boton" viewBox="0 0 64 64" style="top: 384px;left: 512px;">
+            <polyline class="negro" points="64,0 60,4 60,59 64,64 59,60 4,60 0,64 64,64 64,0"></polyline>
+            <polyline class="blanco" points="4,4 59,4 59,59 4,59 4,4"></polyline>
+            <polyline class="verde" points="14,50 50,50 50,56 14,56 14,50"></polyline>
+            <polyline class="verde" points="32,46 14,28 24,28 24,6 40,6 40,28 50,28 32,46"></polyline>
+        </svg>
+        <svg id="b8" onclick="textear4d()"  class="boton" viewBox="0 0 64 64" style="top: 448px; left: 512px;">
+            <polyline class="negro" points="64,0 60,4 60,59 64,64 59,60 4,60 0,64 64,64 64,0"></polyline>
+            <polyline class="blanco" points="4,4 59,4 59,59 4,59 4,4"></polyline>
+            <text shape-rendering="geometricPrecision" x="14" y="50" style="fill: green; stroke: gray;font-family:monospace;font-size:57px">A</text>
+        </svg>
+        <script>
+            var x = 256
+              , y = 256;
+            var nombrearchivo1 = ""
+              , nombrearchivo = "";
+            var anchocan = 512, zoom = 32, croping = "", factor, dx, dy;
+            var hx = "00", hy = "00", hz = "00", ht = "00", px, py;
+            var dibujando = 0, r, pa = '', pi = '', conta = 0, contatext=0;
+            var textiando = 0, ptexto='';
+            var moviendotexto, moviendoblip, seleccionado, rutaseleccionada, colorfil = 'none', colorstroke = '#000000', grueso = '1';
+            var gotero = false
+              , intro = false
+              , colorear = true;
+            var canvas1 = document.getElementById("myCanvas4D");
+            var canvas4d = canvas1.getContext("2d");
+            var canvas2 = document.getElementById("canvas64");
+            var canvas24d = canvas2.getContext("2d");
+            var imageObj = document.getElementById('im')
+              , fileName = "objeto4d";
+            var fila4d = [];
+            var array;
+            if (window.addEventListener) {
+                document.getElementById('panel4d').addEventListener('mousemove', muevemouse, false);
+                document.getElementById('panel4d').addEventListener('wheel', rueda, false);
+                document.getElementById('panel4d').addEventListener('mousewheel', rueda, false);
+                document.getElementById('panel4d').addEventListener('DOMMouseScroll', rueda, false);
+                document.getElementById('panel4d').addEventListener('dblclick', dobleclic, false);
+                document.getElementById('panel4d').addEventListener('contextmenu', clicdere, false);
+                document.getElementById('panel4d').addEventListener('click', clicmouse, false);
+            } else {
+                document.getElementById('panel4d').onmousemove = muevemouse;
+                document.getElementById('panel4d').onwheel = rueda;
+                document.getElementById('panel4d').mousewheel = rueda;
+                document.getElementById('panel4d').DOMMouseScroll = rueda;
+                document.getElementById('panel4d').ondblclick = dobleclic;
+                document.getElementById('panel4d').oncontextmenu = clicdere;
+                document.getElementById('panel4d').onclick = clicmouse;
+            }
+            if (window.addEventListener) {
+                document.addEventListener('keydown', teclas, false);
+            } else {
+                document.onkeydown = teclas;
+            }
+            tapas(); malla4d();
+            text4d('__aplicacion',   96, 56  ,'fill: #ffffff; stroke:  #000000 ;font-family: Arial;font-size:60px','EditorC4D');             
+            function tapas()  {var pts= '0,0 64,64 64,448 0,512 0,0';    poli4d('__tapao', pts, 'fill: url(#grado); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;') ;     pts= '512,0 448,64 448,448 512,512 512,512';    poli4d('__tapae', pts, 'fill: url(#grade); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;') ;     pts= '0,0 512,0 448,64 64,64 0,0';    poli4d('__tapan', pts, 'fill: url(#gradn); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;') ;     pts= '0,512 64,448 448,448 512,512 0,512';    poli4d('__tapas', pts, 'fill: url(#grads); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;') ; }
+            function malla4d(){
+                var lado=512, partes=8, p4d=8;    
+                var cara=lado/partes, prop=lado/p4d, p1=(lado-2*prop)/partes, p2=(lado-prop);    
+                for(var i= 0; i <= partes ;i=i+1){        
+                    var propi=(prop+i*p1),pi=cara*i;        
+                    pts= propi +','+prop + ' '+ propi+ ','+p2;        
+                    poli4d('__mallax'+i, pts, 'fill: none; stroke: black; stroke-width: 0.33; stroke-linecap: round;stroke-linejoin: round;') ;         
+                    pts= prop+','+ propi + ' '+p2+','+propi;        
+                    poli4d('__mallay'+i, pts, 'fill: none; stroke: black; stroke-width: 0.33; stroke-linecap: round;stroke-linejoin: round;') ;            
+                    pts= pi +',0 '+propi+','+prop;        
+                    poli4d('__mallan'+i, pts, 'fill: none; stroke: black; stroke-width: 1; stroke-linecap: round;stroke-linejoin: round;') ;        
+                    pts= pi +',512 '+propi+','+p2;        
+                    poli4d('__mallas'+i, pts, 'fill: none; stroke: black; stroke-width: 1; stroke-linecap: round;stroke-linejoin: round;') ;        
+                    pts= '512,'+ pi +' '+p2 +','+ propi;        
+                    poli4d('__mallae'+i, pts, 'fill: none; stroke: black; stroke-width: 1; stroke-linecap: round;stroke-linejoin: round;') ;        
+                    pts= '0,'+ pi +' '+prop+','+ propi;        
+                    poli4d('__mallao'+i, pts, 'fill: none; stroke: black; stroke-width: 1; stroke-linecap: round;stroke-linejoin: round;') ;    
+                }
+            }
+            function textear4d(){
+                if (textiando == 1) {
+                    textiando = 0;
+                    cier4d();
+                    document.getElementById('panel4d').style.cursor = 'default';
+                    document.getElementById('b8').className.baseVal = "boton";
+                } else {
+                    document.getElementById('b8').className.baseVal = "bactivo";
+                    textiando = 1;
+                    contatext++;
+                    actual = '__texto' + document.getElementById("panel4d").childNodes.length;
+                    text4d(actual,   100, (64 + contatext*16)  ,'fill: ' + colorfil + ' ; stroke: ' + colorstroke + ' ;font-family: Verdana;font-size:16px','Texto');             
+                    document.getElementById('panel4d').style.cursor = 'text';
+                }
+            }
+            function colorear4d() {
+                if (seleccionado) {
+                    if (seleccionado.style.fill == "none") {
+                        seleccionado.style.fill = seleccionado.style.stroke;
+                    } else {
+                        seleccionado.style.fill = "none";
+                    }
+                    rehacerfila4d();
+                } else {
+                    if (colorear) {
+                        colorear = false;
+                        document.getElementById('b4').className.baseVal = "bactivo";
+                        for (i = 0; i < fila4d.length; i++) {
+                            array = fila4d[i].split("|");
+                            if (array[2] === "polyline") {
+                                var pestilo = array[7].split(";");
+                                var colorfondo1 = pestilo[1].split(":");
+                                var colorfondo2 = colorfondo1[1];
+                                sty = 'fill: none ; stroke: ' + colorfondo2 + '; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+                                poli4d(array[3], array[6], sty);
+                            }
+                            if (array[2] === "circle") {
+                                circ4d(array[3], array[4], array[5], array[6], sty);
+                            }
+                            if (array[2] === "text") {
+                                text4d(array[3], array[4], array[5], sty, array[6]);
+                            }
+                        }
+                    } else {
+                        colorear = true;
+                        document.getElementById('b4').className.baseVal = "boton";
+                        for (i = 0; i < fila4d.length; i++) {
+                            array = fila4d[i].split("|");
+                            if (array[2] === "polyline") {
+                                var pestilo = array[7].split(";");
+                                var colorfondo1 = pestilo[1].split(":");
+                                var colorfondo2 = colorfondo1[1];
+                                sty = 'fill: ' + colorfondo2 + '; stroke: ' + colorfondo2 + '; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+                                poli4d(array[3], array[6], sty);
+                            }
+                            if (array[2] === "circle") {
+                                circ4d(array[3], array[4], array[5], array[6], sty);
+                            }
+                            if (array[2] === "text") {
+                                text4d(array[3], array[4], array[5], sty, array[6]);
+                            }
+                        }
+                    }
+                }
+            }
+            function atras4d() {
+                if (seleccionado) {
+                    document.getElementById('b4').className.baseVal = "bactivo";
+                    var sty = "fill: " + seleccionado.style.fill + "; stroke: " + seleccionado.style.stroke + "; stroke-width: " + seleccionado.style.strokeWidth + "; stroke-linecap: round;stroke-linejoin: round;";
+                    puntos = seleccionado.points;
+                    var ptos = puntos.numberOfItems;
+                    var prutatras = '';
+                    for (var incrementador = 0; incrementador < ptos; incrementador++) {
+                        prutatras += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+                    }
+                    var j = 0;
+                    var pidatras = seleccionado.id;
+                    fila4d[j] = j + "|" + "checked|polyline|" + pidatras + "| | |" + prutatras + "|" + sty;
+                    j++;
+                    var nodos = document.getElementById("panel4d").childNodes.length;
+                    for (var incrementador = 1; incrementador < nodos; incrementador++) {
+                        var objeto = document.getElementById("panel4d").childNodes[incrementador];
+                        var pid = objeto.id;
+                        if (pid) {
+                            if (pid.indexOf('__4Dblip') < 0 && pid.indexOf('_espiral') < 0 && pid.indexOf('_coloralfa') < 0 && pid.indexOf('_colorrojo') < 0 && pid.indexOf('_colorverde') < 0 && pid.indexOf('_colorazul') < 0) {
+                                if (pid != '_curs' && pid != '_temp') {
+                                    sty = "fill: " + objeto.style.fill + "; stroke: " + objeto.style.stroke + "; stroke-width: " + objeto.style.strokeWidth + "; stroke-linecap: round;stroke-linejoin: round;";
+                                    puntos = objeto.points;
+                                    var ptos = puntos.numberOfItems;
+                                    var pruta = '';
+                                    for (var i = 0; i < ptos; i++) {
+                                        pruta += puntos.getItem(i).x + "," + puntos.getItem(i).y + " ";
+                                    }
+                                    if (pidatras != pid && prutatras != pruta) {
+                                        fila4d[j] = j + "|" + "checked|polyline|" + pid + "| | |" + pruta + "|" + sty;
+                                        j++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    limpiar4d();
+                    clearpanel();
+                    dibujaXML();
+                    document.getElementById('b4').className.baseVal = "boton";
+                }
+            }
+            function clearpanel() {
+                var nodos = document.getElementById("panel4d").childNodes.length - 1;
+                for (var i = nodos; i > 0; i--) {
+                    var objeto = document.getElementById("panel4d").childNodes[i];
+                    document.getElementById("panel4d").removeChild(objeto);
+                }
+            }
+            function rehacerfila4d() {
+                fila4d = [];
+                var j = 0;
+                var nodos = document.getElementById("panel4d").childNodes.length;
+                for (var incrementador = 1; incrementador < nodos; incrementador++) {
+                    var objeto = document.getElementById("panel4d").childNodes[incrementador];
+                    var pid = objeto.id;
+                    if (pid) {
+                        if (pid.indexOf('__4Dblip') < 0 && pid.indexOf('_espiral') < 0 && pid.indexOf('_coloralfa') < 0 && pid.indexOf('_colorrojo') < 0 && pid.indexOf('_colorverde') < 0 && pid.indexOf('_colorazul') < 0) {
+                            if (pid != '_curs' && pid != '_temp') {
+                                sty = "fill: " + objeto.style.fill + "; stroke: " + objeto.style.stroke + "; stroke-width: " + objeto.style.strokeWidth + "; stroke-linecap: round;stroke-linejoin: round;";
+                                puntos = objeto.points;
+                                if (puntos) {
+                                var ptos = puntos.numberOfItems;
+                                var pruta = '';
+                                for (var i = 0; i < ptos; i++) {
+                                    pruta += puntos.getItem(i).x + "," + puntos.getItem(i).y + " ";
+                                }
+                                fila4d[j] = j + "|" + "checked|polyline|" + pid + "| | |" + pruta + "|" + sty;
+                                j++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            function IA4d() {
+                if (intro) {
+                    intro = false;
+                    apagaintro();
+                } else {
+                    intro = true;
+                    var pruta = ""
+                      , sty = ""
+                      , xanterior = 256
+                      , yanterior = 256;
+                    for (i = 0; i < 2444; i++) {
+                        angle = 0.1 * i;
+                        x = parseInt((angle) * Math.cos(angle));
+                        y = parseInt((angle) * Math.sin(angle));
+                        if ((256 + x) < 85 && (256 + y) < 85) {
+                            console.log(i);
+                        }
+                        if (xanterior != x && yanterior != y) {
+                            xanterior = x;
+                            yanterior = y;
+                            pruta = pruta + ' ' + (256 + x) + ',' + (256 + y);
+                        }
+                    }
+                    sty = 'fill: none; stroke: lime; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+                    poli4d("_espiral", pruta, sty);
+                }
+            }
+            function salv4d() {
+                cier4d();
+                apagaintro();
+                if (document.getElementById('objetos4d').files[0]) {
+                    nombrearchivo1 = document.getElementById('objetos4d').files[0].name;
+                } else {
+                    nombrearchivo1 = "objeto4d.htm";
+                }
+                if (document.getElementById('imagenes').files[0]) {
+                    nombrearchivo = document.getElementById('imagenes').files[0].name;
+                    if (nombrearchivo1 == "objeto4d.htm") {
+                        const lastDot = nombrearchivo.lastIndexOf('.');
+                        const fileName = nombrearchivo.substring(0, lastDot);
+                        const ext = nombrearchivo.substring(lastDot + 1);
+                        nombrearchivo1 = fileName + ".htm";
+                    }
+                } else {
+                    nombrearchivo = "";
+                }
+                var registro = new Date;
+                var fecha = registro.getFullYear() + "/" + ('0' + (registro.getMonth() + 1)).slice(-2) + "/" + ('0' + registro.getDate()).slice(-2);
+                fecha += "_" + ('0' + (registro.getHours())).slice(-2) + ":" + ('0' + registro.getMinutes()).slice(-2) + ":" + ('0' + registro.getSeconds()).slice(-2);
+                var data = "<html><head><title>" + nombrearchivo1 + "</title>";
+                data += "<meta name='Autor' content='Autor4D' />";
+                data += "<meta name='Topico' content='train4d' />";
+                data += "<meta name='Entidad' content='Medellin4D' />";
+                data += "<meta name='lat' content='6.211122' />";
+                data += "<meta name='lon' content='-75.565818' />";
+                data += "<meta name='alt' content='1600' />";
+                data += "<meta name='tim' content='" + fecha + "' />";
+                data += "</head><body style='margin:0;padding:0;'><svg style='position:absolute; left:0px;top:0px;width:512px;height:512px;' id='panel4d'>";
+                data += document.getElementById('panel4d').innerHTML.trim();
+                data += "</svg></body></html>";
+                if (nombrearchivo1 != '') {
+                    download(data, nombrearchivo1, "htm");
+                }
+                if (nombrearchivo != '') {
+                    canvas1.toBlob(function(blob) {
+                        download(blob, nombrearchivo, "jpg");
+                    }, "image/jpeg");
+                }
+            }
+            function download(data, filename, type) {
+                var file = new Blob([data],{
+                    type: type
+                });
+                if (window.navigator.msSaveOrOpenBlob)
+                    window.navigator.msSaveOrOpenBlob(file, filename);
+                else {
+                    var a = document.createElement("a")
+                      , url = URL.createObjectURL(file);
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
+                }
+            }
+            function clicmouse(e) {
+                e = window.event || e;
+                x = parseInt(e.pageX);
+                y = parseInt(e.pageY);
+                var target = e.target;
+                if (moviendotexto){
+                    limpiar4d();
+                    moviendotexto='';
+                }
+                if (gotero) {
+                    document.getElementById("_gota").remove();
+                    colorfill = document.getElementById('pat').style.fill;
+                    colorstroke = document.getElementById('pat').style.stroke;
+                    gotero = false;
+                    document.getElementById('panel4d').style.cursor = 'default';
+                    rehacerfila4d();
+                    document.getElementById('b3').className.baseVal = "boton";
+                }
+                if (croping) {
+                    cropiado()
+                }
+                if (moviendoblip) {
+                    c4d(x, y, 3, moviendoblip, 'lime', 'lime', 'panel4d');
+                    rehacerfila4d();
+                    moviendoblip = '';
+                } else {
+                    if (dibujando === 1) {
+                        cli();
+                    } else {
+                        if (target.id.indexOf('__4Dblip') >= 0) {
+                            moviendoblip = target.id;
+                            puntoanterior = target.cx.animVal.value + ',' + target.cy.animVal.value;
+                        } else {
+                            if (target.id.indexOf('__4Drect') >= 0) {
+                                moviendotexto = target.id;
+                            } else {
+                                if (seleccionado) {
+                                        limpiar4d();
+                                } else {
+                                    seleccione(e.target);
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+            }
+            function componentToHex(c) {
+                var hex = c.toString(16);
+                return hex.length == 1 ? "0" + hex : hex;
+            }
+
+            function rgbToHex(r, g, b) {
+                return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+            }
+            function propiedades4d(objeto) {
+                if(objeto.style.fill=='none'){ 
+                    colorfil='#FFFFFF';
+                }else{
+                    var hexcol = objeto.style.fill.replaceAll("rgb(", "");
+                    hexcol=hexcol.replaceAll(")", "");
+                    hexcol=hexcol.replaceAll(" ", "");
+                    var colores=hexcol.split(',');
+                    var r=parseInt(colores[0]), g=parseInt(colores[1]), b=parseInt(colores[2]);
+                    colorfil = rgbToHex(r, g, b);
+                }
+                if(objeto.style.stroke=='none'){ 
+                    colorstroke='#FFFFFF';
+                } else {
+                    var hexcol = objeto.style.stroke.replaceAll("rgb(", "");
+                    hexcol=hexcol.replaceAll(")", "");
+                    hexcol=hexcol.replaceAll(" ", "");
+                    var colores=hexcol.split(',');
+                    var r=parseInt(colores[0]), g=parseInt(colores[1]), b=parseInt(colores[2]);
+                    colorstroke = rgbToHex(r, g, b);
+                }
+                document.getElementById('incolorlleno').value=colorfil;
+                document.getElementById('incolorborde').value=colorstroke;
+                if(objeto.nodeName=='text'){
+                    document.getElementById('textoin').value=objeto.textContent;  
+                    let fuentefamilia = objeto.style.fontFamily.replaceAll(" ", "_");
+                    var pfuente="#" + fuentefamilia;
+                    document.getElementById('tipotexto').querySelector(pfuente).selected=true;               
+                    var pfuentesize= "#p" + objeto.style.fontSize;
+                    document.getElementById('fuentesize').querySelector(pfuentesize).selected=true;
+                    
+                }
+            }
+            function actualiza4d(){
+                if (document.getElementById('chklleno').checked){
+                    colorfil=document.getElementById('incolorlleno').value;
+                } else {
+                    colorfil='none';
+                }
+                if (document.getElementById('chkborde').checked){
+                    colorstroke=document.getElementById('incolorborde').value;
+                } else {
+                    colorstroke='none';                   
+                }
+                if (seleccionado) {
+                    seleccionado.style.fill=colorfil;
+                    seleccionado.style.stroke=colorstroke;
+                    if(seleccionado.nodeName=='text'){
+                        seleccionado.textContent =      document.getElementById('textoin').value;
+                        seleccionado.style.fontFamily = document.getElementById('tipotexto').value;
+                        seleccionado.style.fontSize   = document.getElementById('fuentesize').value;
+                    }
+                }
+            }
+            function colorpic4d() {
+                if (seleccionado) {
+                    if (gotero) {
+                        gotero = false;
+                        document.getElementById('panel4d').style.cursor = 'default';
+                    } else {
+                        gotero = true;
+                        document.getElementById('panel4d').style.cursor = 'none';
+                        document.getElementById('b3').className.baseVal = "bactivo";
+                    }
+                }
+            }
+            function chupacolor() {
+                var rojo = canvas4d.getImageData(x, y, 1, 1).data[0];
+                var verde = canvas4d.getImageData(x, y, 1, 1).data[1];
+                var azul = canvas4d.getImageData(x, y, 1, 1).data[2];
+                var alfa = canvas4d.getImageData(x, y, 1, 1).data[3];
+                if (rojo < 16) {
+                    rojo = "0" + rojo.toString(16).toUpperCase();
+                } else {
+                    rojo = rojo.toString(16).toUpperCase();
+                }
+                if (verde < 16) {
+                    verde = "0" + verde.toString(16).toUpperCase();
+                } else {
+                    verde = verde.toString(16).toUpperCase();
+                }
+                if (azul < 16) {
+                    azul = "0" + azul.toString(16).toUpperCase();
+                } else {
+                    azul = azul.toString(16).toUpperCase();
+                }
+                if (alfa < 16) {
+                    alfa = "0" + alfa.toString(16).toUpperCase();
+                } else {
+                    alfa = alfa.toString(16).toUpperCase();
+                }
+                colorchupado = "#" + rojo + verde + azul + alfa;
+                document.getElementById('pat').style.fill = colorchupado;
+                document.getElementById('pat').style.stroke = colorchupado;
+            }
+            function muevemouse(e) {
+                e = window.event || e;
+                x = parseInt(e.pageX);
+                y = parseInt(e.pageY);
+                var target = e.target;
+                if (!seleccionado) {
+                    if (e.target.getAttributeNS(null, "id") != 'panel4d' && e.target.getAttributeNS(null, "id") != '_curs' && e.target.getAttributeNS(null, "id") != '_temp') {
+                        if (e.target.getAttributeNS(null, "id").indexOf('__4Dblip') < 0) {
+                            
+                        }
+                    }
+                }
+                if(textiando){
+                    
+                }
+                if(moviendotexto){
+                    text4d(seleccionado.id, x, y, ' ', seleccionado.textContent);
+                    SVGRect=seleccionado.getBBox();
+                    sty='fill:none; stroke-width:1;stroke: lime;';
+                    rect4d('__4Drect', SVGRect.x-1, SVGRect.y, SVGRect.width, SVGRect.height, 3, 3, sty); 
+                }
+                if (dibujando === 1) {
+                    curso();
+                }
+                if (moviendoblip) {
+                    c4d(x, y, 4.5, moviendoblip, 'none', 'red', 'panel4d');
+                    if (seleccionado.nodeName === 'polyline') {
+                        var puntos = rutaseleccionada;
+                        var ptos = puntos.numberOfItems;
+                        var pruta = '';
+                        for (var incrementador = 0; incrementador < ptos; incrementador++) {
+                            pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+                        }
+                        var pruta1 = pruta.replace(puntoanterior, x + ',' + y);
+                        puntoanterior = x + ',' + y;
+                        poli4d(seleccionado.id, pruta1, ' ');
+                    }
+                }
+                if (croping) {
+                    muestrazoom();
+                }
+                if (intro) {
+                    hexcubo();
+                }
+                if (gotero) {
+                    chupacolor();
+                    pruta = x + "," + y + " " + (x) + "," + (y - 2) + "," + (x + 7) + "," + (y - 7) + "," + (x + 9) + "," + (y - 5) + "," + (x + 2) + "," + (y) + "," + x + "," + y;
+                    colorfill = document.getElementById('pat').style.fill;
+                    colorstroke = document.getElementById('pat').style.stroke;
+                    sty = 'fill: ' + colorfill + '; stroke: black; stroke-width: 0.333; stroke-linecap: round; stroke-linejoin: round;';
+                    poli4d("_gota", pruta, sty);
+                    puntos = seleccionado.points;
+                    var ptos = puntos.numberOfItems;
+                    var pruta = '';
+                    for (var incrementador = 0; incrementador < ptos; incrementador++) {
+                        pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+                    }
+                    sty = 'fill: ' + colorfill + '; stroke: ' + colorfill + '; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+                    poli4d(seleccionado.id, pruta, sty);
+                }
+                ;
+            }
+            function apagaintro() {
+                intro = false;
+                if (document.querySelector("defs")) {
+                    document.querySelector("defs").remove();
+                }                    
+                if (document.getElementById('__aplicacion')){
+                    document.getElementById('__aplicacion').remove();
+                }
+                    
+                quitavector('__tapa'); 
+                quitavector('__malla'); 
+                quita('_coloralfa');
+                quita('_colorrojo');
+                quita('_colorverde');
+                quita('_colorazul');
+                if (document.getElementById("_gota")) {
+                    document.getElementById("_gota").remove();
+                }
+                if (document.getElementById('_curs')) {
+                    document.getElementById('_curs').remove();
+                }
+                if (document.getElementById("gintro")) {
+                    document.getElementById("gintro").remove();
+                }
+                if (document.getElementById('_temp')) {
+                    document.getElementById('_temp').remove();
+                }
+                if (document.getElementById('_espiral')) {
+                    document.getElementById('_espiral').remove();
+                }
+            }
+            function quitavector(texto)            {	
+                var nodos = document.getElementById("panel4d").childNodes.length - 1;	
+                for (var incrementador = nodos; incrementador > 0; incrementador--) {		
+                    var objeto = document.getElementById("panel4d").childNodes[incrementador];		
+                    var pid = objeto.id;		
+                    if (pid) {			
+                        if (pid.indexOf(texto) >= 0) {				
+                            document.getElementById("panel4d").removeChild(objeto);			
+                        }		
+                    }	
+                }	
+                blip = 0;
+            }
+            function abrir4d() {
+                apagaintro();
+                document.getElementById('objetos4d').click();
+            }
+            function leeXML() {
+                var archivo = document.getElementById('objetos4d').files[0];
+                var lector = new FileReader();
+                lector.addEventListener("load", function() {
+                    parser = new DOMParser();
+                    xmlDoc = parser.parseFromString(lector.result, "text/xml");
+                    AnalizaXML(xmlDoc);
+                }, false);
+                if (archivo) {
+                    lector.readAsText(archivo);
+                }
+            }
+            function AnalizaXML(xmlDoc) {
+                arregloXML(xmlDoc);
+                dibujaXML();
+            }
+            function arregloXML(xmlDoc) {
+                var tg = xmlDoc.getElementsByTagName("svg")[0].childNodes;
+                var objetos = (fila4d.length);
+                for (i = 0; i < tg.length; i++) {
+                    if (tg[i]) {
+                        fila4d[i + objetos] = i + "|" + "checked|" + tg[i].nodeName + "|" + tg[i].getAttribute('id') + "|";
+                        if (tg[i].nodeName === "polyline") {
+                            fila4d[i + objetos] += " | |" + tg[i].getAttribute('points') + "|";
+                        }
+                        if (tg[i].nodeName === "circle") {
+                            fila4d[i + objetos] += tg[i].getAttribute('cx') + "|" + tg[i].getAttribute('cy') + "|" + tg[i].getAttribute('r') + "|";
+                        }
+                        if (tg[i].nodeName === "text") {
+                            fila4d[i + objetos] += tg[i].getAttribute('x') + "|" + tg[i].getAttribute('y') + "|" + tg[i].textContent + "|";
+                        }
+                        fila4d[i + objetos] += tg[i].getAttribute('style');
+                    }
+                }
+            }
+            function dibujaXML() {
+                var array;
+                for (i = 0; i < fila4d.length; i++) {
+                    array = fila4d[i].split("|");
+                    if (array[2] === "polyline") {
+                        poli4d(array[3], array[6], array[7]);
+                    }
+                    if (array[2] === "circle") {
+                        circ4d(array[3], array[4], array[5], array[6], array[7]);
+                    }
+                    if (array[2] === "text") {
+                        text4d(array[3], array[4], array[5], array[7], array[6]);
+                    }
+                }
+            }
+            function eliminablip() {
+                if (moviendoblip) {
+                    if (seleccionado.nodeName === 'polyline') {
+                        var puntos = rutaseleccionada;
+                        var ptos = puntos.numberOfItems;
+                        var pruta = '';
+                        for (var incrementador = 0; incrementador < ptos; incrementador++) {
+                            pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+                        }
+                        puntoanterior = document.getElementById(moviendoblip).cx.animVal.value + "," + document.getElementById(moviendoblip).cy.animVal.value;
+                        var pruta1 = pruta.replace(puntoanterior, ' ');
+                        poli4d(seleccionado.id, pruta1, ' ');
+                        quitablips('__4Dblip');
+                        seleccione(seleccionado);
+                    }
+                }
+            }
+            function teclas(e) {
+                e = window.event || e;
+                if (e.target.id.indexOf('textoin') < 0) {
+                    tecla(e.keyCode);
+                }
+            }
+            function tecla(k) {
+                var a = 512;
+                if (k === 80 || k === 67 || k === 84 || k === 83 || k === 76 || k === 73 || k === 72 || k === 78) {
+                    cier4d();
+                }
+                if (k === 80) {
+                    boton = '_80';
+                    poly4d();
+                }
+                if (k === 83) {
+                    boton = '_83';
+                    salv4d();
+                }
+                if (k === 76) {
+                    boton = '_76';
+                    abrir4d();
+                }
+                if (k === 73) {
+                    boton = '_73';
+                    imagen4d();
+                }
+                if (k === 46 || k === 110) {
+                    boton = '_46';
+                    suprimir4d();
+                }
+                if (k === 45 || k === 96) {
+                    boton = '_45';
+                    insertar4d();
+                }
+                if (k === 13) {
+                    boton = '_13';
+                    cli();
+                }
+                if (k === 53 || k === 101) {
+                    boton = '_53';
+                    x = pix;
+                    y = piy;
+                    cli();
+                    poly4d();
+                }
+                if (k === 37 || k === 52 || k === 100) {
+                    boton = '_37';
+                    x--;
+                    if (x < 0) {
+                        x = 0;
+                    }
+                    curso();
+                }
+                if (k === 39 || k === 54 || k === 102) {
+                    boton = '_39';
+                    x++;
+                    if (x > a) {
+                        x = a;
+                    }
+                    curso();
+                }
+                if (k === 38 || k === 56 || k === 104) {
+                    boton = '_38';
+                    y--;
+                    if (y < 0) {
+                        y = 0;
+                    }
+                    curso();
+                }
+                if (k === 40 || k === 50 || k === 98) {
+                    boton = '_40';
+                    y++;
+                    if (y > a) {
+                        y = a;
+                    }
+                    curso();
+                }
+                if (k === 36 || k === 55 || k === 103) {
+                    boton = '_36';
+                    x--;
+                    if (x < 0) {
+                        x = 0;
+                    }
+                    y--;
+                    if (y < 0) {
+                        y = 0;
+                    }
+                    curso();
+                }
+                if (k === 33 || k === 57 || k === 105) {
+                    boton = '_33';
+                    x++;
+                    if (x > a) {
+                        x = a;
+                    }
+                    y--;
+                    if (y < 0) {
+                        y = 0;
+                    }
+                    curso();
+                }
+                if (k === 34 || k === 51 || k === 99) {
+                    boton = '_34';
+                    x++;
+                    if (x > a) {
+                        x = a;
+                    }
+                    y++;
+                    if (y > a) {
+                        y = a;
+                    }
+                    curso();
+                }
+                if (k === 35 || k === 49 || k === 97) {
+                    boton = '_35';
+                    x--;
+                    if (x < 0) {
+                        x = 0;
+                    }
+                    y++;
+                    if (y > a) {
+                        y = a;
+                    }
+                    curso();
+                }
+            }
+            function clicdere(e) {
+                e.preventDefault();
+            }
+            function dobleclic(e) {
+                if (seleccionado) {
+                    e = window.event || e;
+                    x = parseInt(e.pageX);
+                    y = parseInt(e.pageY);
+                    var target = e.target;
+                    if (target.id.indexOf('__4Dblip') >= 0) {
+                        puntoanterior = target.cx.animVal.value + ',' + target.cy.animVal.value;
+                        var puntoinserta = target.cx.animVal.value + ',' + target.cy.animVal.value + ' ' + (target.cx.animVal.value + 2) + ',' + (target.cy.animVal.value - 2);
+                        puntos = seleccionado.points;
+                        var ptos = puntos.numberOfItems;
+                        pruta = '';
+                        for (var incrementador = 0; incrementador < ptos; incrementador++) {
+                            pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+                        }
+                        var pruta1 = pruta.replace(puntoanterior, puntoinserta);
+                        poli4d(seleccionado.id, pruta1, ' ');
+                        quitablips('__4Dblip');
+                        seleccione(seleccionado);
+                    }
+                }
+            }
+            function suprimir4d() {
+                if (moviendoblip && seleccionado.nodeName === 'polyline') {
+                    eliminablip();
+                    moviendoblip = '';
+                } else {
+                    if (seleccionado) {
+                        var confirmar = confirm("Eliminar " + seleccionado.id + " ?");
+                        if (confirmar) {
+                            quitablips('bli');
+                            document.getElementById("panel4d").removeChild(seleccionado);
+                            moviendoblip = '';
+                            rehacerfila4d();
+                            limpiar4d();
+                        }
+                    }
+                }
+            }
+            function sobremirect(evt) {
+                var target = evt.target;
+                target.setAttributeNS(null, 'style', 'cursor: move;');
+                target.setAttributeNS(null, 'fill', 'rgba(0,255,0,0.5)');
+                target.setAttributeNS(null, 'stroke', 'red');
+            }
+            function fueramirect(evt) {
+                var target = evt.target;
+                target.setAttributeNS(null, 'fill', 'rgba(0,255,0,0.1)');
+                target.setAttributeNS(null, 'stroke', 'lime');
+            }
+            function sobremi(evt) {
+                var target = evt.target;
+                target.setAttributeNS(null, 'style', 'cursor:pointer;cursor:hand;');
+                target.setAttributeNS(null, 'fill', 'red');
+                target.setAttributeNS(null, 'stroke', 'red');
+            }
+            function fuerami(evt) {
+                var target = evt.target;
+                target.setAttributeNS(null, 'fill', 'rgba(0,255,0,0.1)');
+                target.setAttributeNS(null, 'stroke', 'lime');
+            }
+            function cli() {
+                if (dibujando === 1) {
+                    sty = "fill: " + colorfil + "; stroke: " + colorstroke + "; stroke-width: " + grueso + "; stroke-linecap: round;stroke-linejoin: round;";
+                    if (pi === '') {
+                        actual = 'Vector' + conta;
+                        conta++;
+                        while (document.getElementById(actual)) {
+                            actual = 'Vector' + conta;
+                            conta++;
+                        }
+                        pix = x;
+                        piy = y;
+                        pi = x + ',' + y;
+                        pa = pi;
+                        r = pa;
+                        poli4d(actual, r, sty);
+                        seleccionado = document.getElementById(actual);
+                    } else {
+                        r = r + ',' + x + ',' + y;
+                        poli4d(actual, r, sty);
+                        pa = x + ',' + y;
+                    }
+                }
+            }
+            function cier4d() {
+                limpiar4d();
+                boton = '';
+                dibujando = 0;
+                k = 0;
+                pi = '';
+                pa = '';
+                if (document.getElementById('_curs')) {
+                    document.getElementById('_curs').remove();
+                }
+                if (document.getElementById('_temp')) {
+                    document.getElementById('_temp').remove();
+                }
+                document.getElementById('panel4d').style.cursor = 'default';
+            }
+            function limpiar4d() {
+                quitablips('__4Dblip');
+                quitablips('__4Drect'); 
+                moviendotexto='';               
+                seleccionado = '';
+            }
+            function curso() {
+                var sty = ''
+                  , cu = '';
+                if (dibujando === 1) {
+                    if (pa !== '') {
+                        sty = 'fill: none; stroke: red; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+                        cu = pa + ',' + x + ',' + y;
+                        poli4d('_temp', cu, sty);
+                    }
+                    sty = 'fill: none; stroke: blue; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+                    cu = x - 2 + ',' + (y - 2) + ',' + (x + 2) + ',' + (y - 2) + ',' + (x + 2) + ',' + (y + 2) + ',' + (x - 2) + ',' + (y + 2) + ',' + (x - 2) + ',' + (y - 2);
+                    poli4d('_curs', cu, sty);
+                }
+            }
+            function poly4d() {
+                if (dibujando == 1) {
+                    dibujando = 0;
+                    cier4d();
+                    rehacerfila4d();
+                    document.getElementById('panel4d').style.cursor = 'default';
+                    document.getElementById('b2').className.baseVal = "boton";
+                } else {
+                    document.getElementById('b2').className.baseVal = "bactivo";
+                    dibujando = 1;
+                    curso();
+                    document.getElementById('panel4d').style.cursor = 'none';
+                }
+            }
+            function suiche4d(pid) {
+                if (document.getElementById(pid).style.display == "block" || document.getElementById(pid).style.display == "undefined") {
+                    document.getElementById(pid).style.display = "none";
+                } else {
+                    document.getElementById(pid).style.display = "block";
+                }
+            }
+            function imagen4d() {
+                apagaintro();
+                document.getElementById('imagenes').click();
+            }
+            function recorta() {
+                var archivo = document.getElementById('imagenes').files[0];
+                if (archivo) {
+                    document.getElementById('b1').remove();
+                    document.getElementById('myCanvas4D').display = "block";
+                    var lector = new FileReader();
+                    lector.readAsDataURL(archivo);
+                    lector.onloadend = function() {
+                        document.getElementById('im').src = lector.result;
+                    }
+                    ;
+                    document.getElementById('im').onload = function() {
+                        var an = 0
+                          , al = 0
+                          , a = 512;
+                        var anchoi = document.getElementById('im').width;
+                        var altoi = document.getElementById('im').height;
+                        var ra = anchoi / altoi;
+                        if (ra != 1 && anchoi != a) {
+                            croping = "1";
+                            document.getElementById('panel4d').style.cursor = 'none';
+                            if (ra > 1) {
+                                an = a;
+                                al = parseInt(a / ra);
+                                zan = parseInt(512 * (a / anchoi));
+                                zal = zan;
+                                factor = anchoi / an;
+                                dy = parseInt((a - al) / 2);
+                                dx = 0;
+                            } else {
+                                an = parseInt(a * ra);
+                                al = a;
+                                zal = parseInt(512 * (a / altoi));
+                                zan = zal;
+                                factor = altoi / al;
+                                dy = 0;
+                                dx = parseInt((a - an) / 2);
+                            }
+                            zoom = parseInt(zan / 2);
+                            document.getElementById('im').style.display = 'block';
+                            document.getElementById('im').width = an;
+                            document.getElementById('im').height = al;
+                            document.getElementById('im').style.top = dy + 'px';
+                            document.getElementById('im').style.left = dx + 'px';
+                            muestrazoom();
+                        } else {
+                            document.getElementById('im').width = a;
+                            document.getElementById('im').height = a;
+                            document.getElementById('im').style.top = '0px';
+                            document.getElementById('im').style.left = '0px';
+                            canvas4d.drawImage(imageObj, 0, 0, anchoi, altoi, 0, 0, 512, 512);
+                            canvas24d.drawImage(imageObj, 0, 0, anchoi, altoi, 0, 0, 64, 64);
+                            cropiado();
+                        }
+                    }
+                }
+            }
+            function rueda(e) {
+                e = window.event || e;
+                var target = e.target;
+                if (croping) {
+                    var delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.detail));
+                    zoom = zoom + delta;
+                    muestrazoom();
+                }
+            }
+            function cropiado() {
+                croping = "";
+                canvas1.style.left = "0px";
+                canvas1.style.top = "0px";
+                document.getElementById("im").remove();
+                document.getElementById('panel4d').style.cursor = 'default';
+                if (document.getElementById("crop")) {
+                    document.getElementById("crop").remove();
+                }
+                if (document.getElementById("fu")) {
+                    document.getElementById("fu").remove();
+                }
+                if (document.getElementById("fd")) {
+                    document.getElementById("fd").remove();
+                }
+                if (document.getElementById("fl")) {
+                    document.getElementById("fl").remove();
+                }
+                if (document.getElementById("fr")) {
+                    document.getElementById("fr").remove();
+                }
+            }
+            function muestrazoom() {
+                var sty = 'fill: none; stroke: lime; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+                var pruta = x - zoom + ',' + (y - zoom) + ',' + (x + zoom) + ',' + (y - zoom) + ',' + (x + zoom) + ',' + (y + zoom) + ',' + (x - zoom) + ',' + (y + zoom) + ',' + (x - zoom) + ',' + (y - zoom);
+                poli4d("crop", pruta, sty);
+                pruta = x + ',' + (y - 5) + ', ' + x + ',' + (y - 2);
+                poli4d("fu", pruta, sty);
+                pruta = x + ',' + (y + 5) + ', ' + x + ',' + (y + 2);
+                poli4d("fd", pruta, sty);
+                pruta = (x - 5) + ',' + y + ', ' + (x - 2) + ',' + y;
+                poli4d("fl", pruta, sty);
+                pruta = (x + 5) + ',' + y + ', ' + (x + 2) + ',' + y;
+                poli4d("fr", pruta, sty);
+                canvas4d.fillStyle = "rgb(128,128,128)";
+                canvas4d.fillRect(0, 0, anchocan, anchocan);
+                canvas4d.fill();
+                canvas24d.fillStyle = "rgb(128,128,128)";
+                canvas24d.fillRect(0, 0, 64, 64);
+                canvas24d.fill();
+                x0 = parseInt(((x - dx) - zoom) * factor);
+                x1 = parseInt(((x - dx) + zoom) * factor) - x0;
+                y0 = parseInt(((y - dy) - zoom) * factor);
+                y1 = parseInt(((y - dy) + zoom) * factor) - y0;
+                canvas4d.drawImage(imageObj, x0, y0, x1, y1, 0, 0, anchocan, anchocan);
+                canvas24d.drawImage(imageObj, x0, y0, x1, y1, 0, 0, 64, 64);
+            }
+            function hexcubo() {
+                px = x - 256;
+                py = y - 256;
+                if (px <= 0 && py <= 0) {
+                    ht = parseInt(Math.sqrt(px * px + py * py) * (256 / 362));
+                    if (ht < 16) {
+                        ht = "0" + ht.toString(16).toUpperCase();
+                    } else {
+                        ht = ht.toString(16).toUpperCase();
+                    }
+                }
+                if (px > 0 && py <= 0) {
+                    hx = parseInt(Math.sqrt(px * px + py * py) * (256 / 362));
+                    if (hx < 16) {
+                        hx = "0" + hx.toString(16).toUpperCase();
+                    } else {
+                        hx = hx.toString(16).toUpperCase();
+                    }
+                }
+                if (px > 0 && py > 0) {
+                    hy = parseInt(Math.sqrt(px * px + py * py) * (256 / 362));
+                    if (hy < 16) {
+                        hy = "0" + hy.toString(16).toUpperCase();
+                    } else {
+                        hy = hy.toString(16).toUpperCase();
+                    }
+                }
+                if (px <= 0 && py > 0) {
+                    hz = parseInt(Math.sqrt(px * px + py * py) * (256 / 362));
+                    if (hz < 16) {
+                        hz = "0" + hz.toString(16).toUpperCase();
+                    } else {
+                        hz = hz.toString(16).toUpperCase();
+                    }
+                }
+                var hco = "#" + hx + hy + hz + ht;
+                document.getElementById('pat').style.fill = hco;
+                document.getElementById('pat').style.stroke = hco;
+                sale4d(ht, 5, 5, "_coloralfa", "black");
+                sale4d(hx, 479, 5, "_colorrojo", "red");
+                sale4d(hy, 479, 479, "_colorverde", "green");
+                sale4d(hz, 5, 479, "_colorazul", "blue");
+                var sty = 'fill: ' + hco + '; stroke: ' + hco + '; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+                var pruta = (256 - parseInt(ht, 16)) + ',' + (256 - parseInt(ht, 16)) + ' ' + (256 + parseInt(hx, 16)) + ',' + (256 - parseInt(hx, 16)) + ' ' + (256 + parseInt(hy, 16)) + ',' + (256 + parseInt(hy, 16)) + ' ' + (256 - parseInt(hz, 16)) + ',' + (256 + parseInt(hz, 16));
+                poli4d("crop", pruta, sty);
+            }
+            function quita(texto) {
+                var nodos = document.getElementById('panel4d').childNodes.length - 1;
+                for (var incremento = nodos; incremento > 0; incremento--) {
+                    var objeto = document.getElementById('panel4d').childNodes[incremento];
+                    var pid = objeto.id;
+                    if (pid) {
+                        if (pid.indexOf(texto) >= 0) {
+                            document.getElementById('panel4d').removeChild(objeto);
+                        }
+                    }
+                }
+            }
+            function seleccione(objetivo) {
+                limpiar4d();
+                if (objetivo.nodeName !== 'svg') {
+                    seleccionado = objetivo;
+                    if (objetivo.nodeName === 'text') {
+                        SVGRect=seleccionado.getBBox();
+                        sty='fill:none; stroke-width:1;stroke: lime;';
+                        rect4d('__4Drect', SVGRect.x, SVGRect.y, SVGRect.width, SVGRect.height, 3, 3, sty);
+                        propiedades4d(seleccionado);
+                    }
+                    if (objetivo.nodeName === 'circle') {
+                    }
+                    if (objetivo.nodeName === 'polyline') {
+                        rutaseleccionada = objetivo.points;
+                        colorfil = objetivo.style.fill;
+                        colorstroke = objetivo.style.stroke;
+                        if (colorstroke == 'rgb(0, 0, 0)') {
+                            colorstroke = '#000000'
+                        }
+                        grueso = objetivo.style.strokeWidth;
+                        poneblips('__4Dblip', objetivo.points, 'lime');
+                        propiedades4d(seleccionado);
+                    }
+                }
+            }
+            function quitablips(texto) {
+                var nodos = document.getElementById("panel4d").childNodes.length - 1;
+                for (var incrementador = nodos; incrementador > 0; incrementador--) {
+                    var objeto = document.getElementById("panel4d").childNodes[incrementador];
+                    var pid = objeto.id;
+                    if (pid) {
+                        if (pid.indexOf(texto) >= 0) {
+                            document.getElementById("panel4d").removeChild(objeto);
+                        }
+                    }
+                }
+                blip = 0;
+            }
+            function poneblips(pid, puntos, fil) {
+                var ptos = puntos.numberOfItems;
+                var pruta = '';
+                for (var incrementador = 0; incrementador < ptos; incrementador++) {
+                    blip++;
+                    c4d(puntos.getItem(incrementador).x, puntos.getItem(incrementador).y, 1, pid + blip, 'rgba(0,255,0,0.1)', fil, 'panel4d');
+                    pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+                }
+            }
+            function sale4d(dato, xpos, ypos, pid, co) {
+                quita(pid);
+                dato = dato.toString();
+                for (var incremento = 0; incremento < dato.length; incremento++) {
+                    ptex = dato[incremento];
+                    caracter(xpos + incremento * 16, ypos, ptex.charCodeAt(0), pid + incremento, co);
+                }
+                function caracter(xp, yp, kp, pid, co) {
+                    var a = "3,2 1,0 12,0 10,2 3,2"
+                      , b = "13,10 12,11 11,10 11,3 13,1 13,10"
+                      , c = "11,21 11,14 12,13 13,14 13,23 11,21"
+                      , d = "3,22 10,22 12,24 1,24 3,22"
+                      , e = "2,14 2,21 0,23 0,14 1,13 2,14"
+                      , f = "2,10 1,11 0,10 0,1 2,3 2,10"
+                      , g = "2,12 3,11 10,11 11,12 10,13 3,13 2,12"
+                      , h = "14,24 13,23 14,22 15,23 14,24"
+                      , i = "3,20 3,18 10,11 11,12 7,18 11,24 3,20"
+                      , j = "11,23 13,25 13,33 11,31 11,25 11,23"
+                      , k = "5,13 5,22 6,23 7,22 7,13 6,12 5,13"
+                      , l = "0,12 6,18 8,18 13,12 7,17 0,12"
+                      , m = "7,10 5,8 7,6 9,8 7,10"
+                      , n = "2,18 12,18 12,13 11,14 11,17 2,17,2,18"
+                      , o = "7,18 5,16 7,14 9,16 7,18"
+                      , p = "7,24 5,22 7,20 9,22 7,24"
+                      , r = "2,14 2,16 10,16 12,18 12,24 10,24 10,18 0,18 0,14 1,13 2,14"
+                      , q = "1,24 3,17 12,17 12,22 14,24 12,19 10,19 4,19 3,22 1,24"
+                      , s = "1,13 0,14 5,24 7,24 12,14 11,13 6,21 1,13"
+                      , t = "1,24 10,13 11,12 12,13 3,24 1,24"
+                      , u = "13,25 13,31 11,33 3,33 1,31 11,31 11,23 13,25"
+                      , v = "2,12 3,11 7,14 10,11 11,12 7,16 3,13 2,12"
+                      , w = "1,24 2,24 2,33 0,31 0,25 1,24"
+                      , x = "7,17 13,23 7,19 0,23 7,17"
+                      , y = "5,24 5,32 6,33 7,32 7,24 5,24"
+                      , z = "7,17 13,23 7,19 0,23 7,17";
+                    var as = [];
+                    as[32] = (" ",
+                    "");
+                    as[39] = ("'",
+                    "f");
+                    as[42] = ("*",
+                    "c h");
+                    as[44] = (",",
+                    "c");
+                    as[45] = ("-",
+                    "g");
+                    as[46] = (".",
+                    "p");
+                    as[48] = ("0",
+                    "a b c d e f");
+                    as[49] = ("1",
+                    "b c");
+                    as[50] = ("2",
+                    "a b d e g");
+                    as[51] = ("3",
+                    "a b c d g");
+                    as[52] = ("4",
+                    "b c f g");
+                    as[53] = ("5",
+                    "a c d f g");
+                    as[54] = ("6",
+                    "a c d e f g");
+                    as[55] = ("7",
+                    "a b c");
+                    as[56] = ("8",
+                    "a b c d e g f");
+                    as[57] = ("9",
+                    "a b c f g");
+                    as[58] = (":",
+                    "m o");
+                    as[59] = (";",
+                    "a");
+                    as[61] = ("=",
+                    "d g");
+                    as[65] = ("A",
+                    "a b c e g f");
+                    as[66] = ("B",
+                    "a b c d e g f");
+                    as[67] = ("C",
+                    "a d e f");
+                    as[68] = ("D",
+                    "a b c d e");
+                    as[69] = ("E",
+                    "a d e g f");
+                    as[70] = ("F",
+                    "a e g f");
+                    as[91] = ("[",
+                    "e");
+                    as[94] = ("^",
+                    "a b f");
+                    as[95] = ("_",
+                    "d");
+                    as[96] = ("'",
+                    "b");
+                    as[97] = ("a",
+                    "c d g q");
+                    as[98] = ("b",
+                    "c d e f g");
+                    as[99] = ("c",
+                    "d e g");
+                    as[100] = ("d",
+                    "b c d e g");
+                    as[101] = ("e",
+                    "d e g n");
+                    as[102] = ("f",
+                    "d e g w");
+                    as[103] = ("g",
+                    "c d e g u");
+                    as[104] = ("h",
+                    "c e f g");
+                    as[105] = ("i",
+                    "k");
+                    as[106] = ("j",
+                    "c u");
+                    as[107] = ("k",
+                    "e i");
+                    as[108] = ("l",
+                    "d e f");
+                    as[109] = ("m",
+                    "c e v");
+                    as[110] = ("n",
+                    "c e g");
+                    as[241] = ("ñ",
+                    "a c e g");
+                    as[111] = ("o",
+                    "c d e g");
+                    as[112] = ("P",
+                    "c d e g w");
+                    as[113] = ("Q",
+                    "c d e g j");
+                    as[114] = ("R",
+                    "e g");
+                    as[115] = ("s",
+                    "d g r");
+                    as[116] = ("T",
+                    "d e f g");
+                    as[117] = ("U",
+                    "c d e");
+                    as[118] = ("V",
+                    "s");
+                    as[119] = ("W",
+                    "c e z");
+                    as[120] = ("X",
+                    "l x");
+                    as[121] = ("Y",
+                    "s y");
+                    as[122] = ("Z",
+                    "d g t");
+                    as[176] = ("°",
+                    "m");
+                    as[177] = (" ",
+                    "a h");
+                    as[178] = (" ",
+                    "b h");
+                    as[179] = (" ",
+                    "d h");
+                    as[180] = (" ",
+                    "e h");
+                    as[181] = (" ",
+                    "f h");
+                    as[182] = (" ",
+                    "g h");
+                    as[183] = (" ",
+                    "a b h");
+                    as[184] = (" ",
+                    "a b c h");
+                    as[185] = (" ",
+                    "a b c d h");
+                    if (!as[kp]) {
+                        kp = 32
+                    }
+                    ;var lp = as[kp].split(" ");
+                    ll = lp.length;
+                    for (var incremento = 0; incremento < ll; incremento++) {
+                        switch (lp[incremento]) {
+                        case "a":
+                            polilinea(desplazar(a, xp, yp), "a" + pid, co);
+                            break;
+                        case "b":
+                            polilinea(desplazar(b, xp, yp), "b" + pid, co);
+                            break;
+                        case "c":
+                            polilinea(desplazar(c, xp, yp), "c" + pid, co);
+                            break;
+                        case "d":
+                            polilinea(desplazar(d, xp, yp), "d" + pid, co);
+                            break;
+                        case "e":
+                            polilinea(desplazar(e, xp, yp), "e" + pid, co);
+                            break;
+                        case "f":
+                            polilinea(desplazar(f, xp, yp), "f" + pid, co);
+                            break;
+                        case "g":
+                            polilinea(desplazar(g, xp, yp), "g" + pid, co);
+                            break;
+                        case "h":
+                            polilinea(desplazar(h, xp, yp), "h" + pid, co);
+                            break;
+                        case "i":
+                            polilinea(desplazar(i, xp, yp), "i" + pid, co);
+                            break;
+                        case "j":
+                            polilinea(desplazar(j, xp, yp), "j" + pid, co);
+                            break;
+                        case "k":
+                            polilinea(desplazar(k, xp, yp), "k" + pid, co);
+                            break;
+                        case "l":
+                            polilinea(desplazar(l, xp, yp), "l" + pid, co);
+                            break;
+                        case "m":
+                            polilinea(desplazar(m, xp, yp), "m" + pid, co);
+                            break;
+                        case "n":
+                            polilinea(desplazar(n, xp, yp), "n" + pid, co);
+                            break;
+                        case "o":
+                            polilinea(desplazar(o, xp, yp), "o" + pid, co);
+                            break;
+                        case "p":
+                            polilinea(desplazar(p, xp, yp), "p" + pid, co);
+                            break;
+                        case "p":
+                            polilinea(desplazar(p, xp, yp), "p" + pid, co);
+                            break;
+                        case "q":
+                            polilinea(desplazar(q, xp, yp), "q" + pid, co);
+                            break;
+                        case "r":
+                            polilinea(desplazar(r, xp, yp), "r" + pid, co);
+                            break;
+                        case "s":
+                            polilinea(desplazar(s, xp, yp), "s" + pid, co);
+                            break;
+                        case "t":
+                            polilinea(desplazar(t, xp, yp), "t" + pid, co);
+                            break;
+                        case "u":
+                            polilinea(desplazar(u, xp, yp), "u" + pid, co);
+                            break;
+                        case "v":
+                            polilinea(desplazar(v, xp, yp), "v" + pid, co);
+                            break;
+                        case "w":
+                            polilinea(desplazar(w, xp, yp), "w" + pid, co);
+                            break;
+                        case "x":
+                            polilinea(desplazar(x, xp, yp), "x" + pid, co);
+                            break;
+                        case "y":
+                            polilinea(desplazar(y, xp, yp), "y" + pid, co);
+                            break;
+                        case "z":
+                            polilinea(desplazar(z, xp, yp), "z" + pid, co);
+                            break;
+                        default:
+                        }
+                    }
+                }
+                function desplazar(cade, xp, yp) {
+                    arreglo = cade.split(" ");
+                    ll = arreglo.length;
+                    cade = "";
+                    var arreglo1;
+                    for (var incremento = 0; incremento < ll; incremento++) {
+                        arreglo1 = arreglo[incremento].split(",");
+                        cade += (xp + parseInt(arreglo1[0])) + "," + (yp + parseInt(arreglo1[1])) + " ";
+                    }
+                    return cade;
+                }
+                function polilinea(puntos, pid, co, zin) {
+                    var antialias = true;
+                    if (document.getElementById(pid)) {
+                        var obj = document.getElementById(pid);
+                    } else {
+                        var obj = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                    }
+                    obj.setAttribute('shape-rendering', antialias ? 'auto' : 'optimizeSpeed');
+                    obj.setAttribute('id', pid);
+                    if (puntos)
+                        obj.setAttribute('points', puntos);
+                    obj.setAttribute('fill', co);
+                    obj.setAttribute('stroke', co);
+                    obj.setAttribute('stroke-linecap', "round");
+                    obj.setAttribute('stroke-linejoin', "round");
+                    var pindice = ' z-index: ' + zin + ';';
+                    obj.setAttribute('style', pindice);
+                    if (!document.getElementById(pid)) {
+                        document.getElementById('panel4d').appendChild(obj);
+                    }
+                }
+            }
+            function numeroconcomas(x) {
+                var parts = x.toString().split(".");
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return parts.join(".");
+            }
+            function rect4d(pid, px, py, pancho, palto, radiox, radioy, psty) {
+                var o4d;
+                if (document.getElementById(pid)) {
+                    o4d = document.getElementById(pid);
+                } else {
+                    o4d = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    o4d.setAttribute('shape-rendering', 'geometricPrecision');
+                    o4d.setAttribute('id', pid);
+                }
+                o4d.setAttribute('x', px);
+                o4d.setAttribute('y', py);
+                o4d.setAttribute('width', pancho);
+                o4d.setAttribute('height', palto);
+                o4d.setAttribute('rx', radiox);
+                o4d.setAttribute('ry', radioy);
+                o4d.setAttribute('style', psty);
+                o4d.addEventListener('mouseover', sobremirect, false);
+                o4d.addEventListener('mouseout', fueramirect, false);
+                if (!document.getElementById(pid)) {
+                    document.getElementById('panel4d').appendChild(o4d);
+                }
+            }
+            function poli4d(pid, pts, sty) {
+                var o4d;
+                if (document.getElementById(pid)) {
+                    o4d = document.getElementById(pid);
+                } else {
+                    o4d = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                    o4d.setAttribute('shape-rendering', 'geometricPrecision');
+                    o4d.setAttribute('id', pid);
+                }
+                o4d.setAttribute('points', pts);
+                if (sty !== ' ') {
+                    o4d.setAttribute('style', sty);
+                }
+                if (!document.getElementById(pid)) {
+                    document.getElementById('panel4d').appendChild(o4d);
+                }
+            }
+            function circ4d(pid, pcx, pcy, pra, sty) {
+                var o4d;
+                if (document.getElementById(pid)) {
+                    o4d = document.getElementById(pid);
+                } else {
+                    o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    o4d.setAttribute('shape-rendering', 'geometricPrecision');
+                    o4d.setAttribute('id', pid);
+                }
+                o4d.setAttribute('cx', pcx);
+                o4d.setAttribute('cy', pcy);
+                o4d.setAttribute('r', pra);
+                if (sty !== ' ') {
+                    o4d.setAttribute('style', sty);
+                }
+                if (!document.getElementById(pid)) {
+                    document.getElementById('panel4d').appendChild(o4d);
+                }
+            }
+            function elip4d(pid, pcx, pcy, prx, pry, sty) {
+                var o4d;
+                if (document.getElementById(pid)) {
+                    o4d = document.getElementById(pid);
+                } else {
+                    o4d = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+                    o4d.setAttribute('shape-rendering', 'geometricPrecision');
+                    o4d.setAttribute('id', pid);
+                }
+                o4d.setAttribute('cx', pcx);
+                o4d.setAttribute('cy', pcy);
+                o4d.setAttribute('rx', prx);
+                o4d.setAttribute('ry', pry);
+                if (sty !== ' ') {
+                    o4d.setAttribute('style', sty);
+                }
+                if (!document.getElementById(pid)) {
+                    document.getElementById('panel4d').appendChild(o4d);
+                }
+            }
+            function text4d(pid, px, py, sty, txt) {
+                var o4d;
+                if (document.getElementById(pid)) {
+                    o4d = document.getElementById(pid);
+                } else {
+                    o4d = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    o4d.setAttribute('shape-rendering', 'geometricPrecision');
+                    o4d.setAttribute('id', pid);
+                }
+                o4d.setAttribute('x', px);
+                o4d.setAttribute('y', py);
+                if (sty !== ' ') {
+                    o4d.setAttribute('style', sty);
+                }
+                o4d.textContent = txt;
+                if (!document.getElementById(pid)) {
+                    document.getElementById('panel4d').appendChild(o4d);
+                }
+            }
+            function c4d(cx, cy, radio, pid, fil, str, pan) {
+                var o4d;
+                if (document.getElementById(pid)) {
+                    o4d = document.getElementById(pid);
+                } else {
+                    o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    var antialias = 'true';
+                    o4d.setAttribute('shape-rendering', antialias ? 'auto' : 'optimizeSpeed');
+                    o4d.setAttribute('id', pid);
+                }
+                if (cx)
+                    o4d.setAttribute('cx', cx);
+                if (cy)
+                    o4d.setAttribute('cy', cy);
+                if (radio)
+                    o4d.setAttribute('r', radio);
+                o4d.setAttribute('fill', fil);
+                o4d.setAttribute('stroke', str);
+                o4d.addEventListener('mouseover', sobremi, false);
+                o4d.addEventListener('mouseout', fuerami, false);
+                if (!document.getElementById(pid)) {
+                    document.getElementById(pan).appendChild(o4d);
+                }
+            }
+        </script>
+    </body>
+</html>

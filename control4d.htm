@@ -1,0 +1,106 @@
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Control4D</title>
+<style></style>
+</head>
+<body>
+<svg onclick="openFullscreen();" width="64" height="64" viewBox="0 0 128 128">
+<path d="M 83.96875 17.5625 L 83.96875 17.59375 L 76.65625 24.875 L 97.09375 24.96875 L 76.09375 45.96875 L 81.9375 51.8125 L 102.78125 30.9375 L 102.875 51.15625 L 110.15625 43.875 L 110.1875 17.59375 L 83.96875 17.5625 z M 44.125 17.59375 L 17.90625 17.625 L 17.9375 43.90625 L 25.21875 51.1875 L 25.3125 30.96875 L 46.15625 51.8125 L 52 45.96875 L 31 25 L 51.4375 24.90625 L 44.125 17.59375 z M 46.0625 76.03125 L 25.1875 96.875 L 25.09375 76.65625 L 17.8125 83.9375 L 17.8125 110.21875 L 44 110.25 L 51.3125 102.9375 L 30.90625 102.84375 L 51.875 81.875 L 46.0625 76.03125 z M 82 76.15625 L 76.15625 82 L 97.15625 103 L 76.71875 103.0625 L 84.03125 110.375 L 110.25 110.34375 L 110.21875 84.0625 L 102.9375 76.8125 L 102.84375 97 L 82 76.15625 z"></path>
+</svg>
+<svg id="panel4d" style=" outline: black solid 1px; width: 512px; height: 512px;" viewBox="0 0 512 512">
+<text shape-rendering="geometricPrecision" id="__instante" x="2" y="20" style="fill: #958359; stroke: #836d3c; font-family: Verdana; font-size: 20px;">Control4D</text>
+<text shape-rendering="geometricPrecision" id="__intime" x="510" y="20" style="direction: rtl; fill: #958359; stroke: #836d3c; font-family: Verdana; font-size: 20px;">Control4D</text>
+ 
+<text shape-rendering="geometricPrecision" id="__temp" x="2" y="40" style="fill: lime; stroke: lime; font-family: Verdana; font-size: 20px;">Temperatura 24°C</text>
+<text shape-rendering="geometricPrecision" id="__hume" x="2" y="60" style="fill: blue; stroke: blue; font-family: Verdana; font-size: 20px;">Humedad Relativa 40%</text>
+<polyline shape-rendering="geometricPrecision" id="linea1" points="" style="fill: none; stroke: lime; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"></polyline>
+<polyline shape-rendering="geometricPrecision" id="linea2" points="" style="fill: none; stroke: blue; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"></polyline>
+</svg>
+<script>
+var elem = document.getElementById("panel4d");
+function openFullscreen() {
+  if (elem.requestFullscreen) { elem.requestFullscreen(); } 
+  else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
+  else if (elem.msRequestFullscreen) { elem.msRequestFullscreen();}
+}
+</script>
+<script>
+function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+    if ((x1 === x2 && y1 === y2) || (x3 === x4 && y3 === y4)) {return false};
+    denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+    if (denominator === 0) { return false   };
+    let ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+    let ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+    if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {  return false };
+    let x = Math.round(x1 + ua * (x2 - x1));
+    let y = Math.round(y1 + ua * (y2 - y1));
+    return  {x, y};
+}
+var inter1=(intersect(512, 512, 0, 256, 0, 512, 512, 0));
+for (var l=512; l>=0 ; l=l-32){
+	var inter4=(intersect(512, 512, 0, 256, l, 512, 256, 256));
+	var inter7=(intersect(l, 512, 256, 256, inter1.x, inter1.y, 512, inter1.y));
+	pts=l + ",512 " + inter7.x + "," + inter7.y  ;
+	poli4d('_hh'+l, pts , "fill: none ; stroke: #958359; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;");
+	var inter5=(intersect(512, 512, 256, 256, inter4.x, inter4.y, 512, inter4.y));
+	var inter6=(intersect(0, 512, 256, 256, inter4.x, inter4.y, 0, inter4.y));
+	pts=inter6.x + "," + inter6.y + " " + inter5.x + "," + inter5.y ;
+	poli4d('_h'+l, pts , "fill: none ; stroke: #958359; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;");
+}
+elId="";
+datos=[];
+function detectar(){try {pulso();elId = window.requestAnimationFrame(detectar);}catch (e) { alert(`Error en detección:${e.toString()}`)}}
+var j=171, k=256, pts1="", pts2="",pul=0;
+function pulso(){
+    var registro = new Date;	   
+    var instante=registro.getFullYear() + ' ' + ('0' + (registro.getMonth()+1)).slice(-2) + ' ' + ('0' + registro.getDate()).slice(-2) ;	    
+    instante+=" "+('0' + (registro.getHours())).slice(-2) +  ' ' + ('0' + registro.getMinutes()).slice(-2) + ' ' + ('0' + registro.getSeconds()).slice(-2) + ' ' + ('00' + registro.getMilliseconds()).slice(-3);
+	document.getElementById("__instante").innerHTML = instante;
+	pul++;
+	document.getElementById("__intime").innerHTML = pul;
+	j=j+1; 
+	if (j > 341) {
+		//mueve x en la linea
+		j=171;
+		pts1="";pts2="";
+		//window.cancelAnimationFrame(elId);
+		return;
+	}
+	k= parseInt(Math.random() * (341 - 171) + 171);
+	document.getElementById("__temp").innerHTML = "Temperatura :" + k + " °C";
+	pts1= pts1 + j +"," + k +" ";
+	k= parseInt(Math.random() * (341 - 171) + 171);
+	document.getElementById("__hume").innerHTML = "Humedad Relativa :" + k + "%";
+	pts2= pts2 + j +"," + k +" ";
+	//console.log(pts);
+	document.getElementById('linea1').setAttribute('points', pts1);
+	document.getElementById('linea2').setAttribute('points', pts2);
+}
+detectar();
+function poli4d(pid, pts, sty) {
+    if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){    
+        var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline");o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid);}     o4d.setAttribute("points", pts); if (sty !== " ") {o4d.setAttribute("style", sty);} if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d); } 
+    }
+}
+function text4d(pid, px, py, sty, txt) {var o4d;if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "text");o4d.setAttribute("shape-rendering", "geometricPrecision");o4d.setAttribute("id", pid);}o4d.setAttribute("x", px);o4d.setAttribute("y", py);if (sty !== " ") {o4d.setAttribute("style", sty);}o4d.textContent = txt;if (!document.getElementById(pid)) {document.getElementById("hoja4d").appendChild(o4d);}}
+function circ4d(pid, pcx, pcy, pra, sty) {
+	var o4d;
+	if (document.getElementById(pid)) {
+		o4d = document.getElementById(pid);
+	} else {
+		o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+		o4d.setAttribute('shape-rendering', 'geometricPrecision');
+		o4d.setAttribute('id', pid);
+	}
+	o4d.setAttribute('cx', pcx);
+	o4d.setAttribute('cy', pcy);
+	o4d.setAttribute('r', pra);
+	if (sty !== ' ') {
+		o4d.setAttribute('style', sty);
+	}
+	if (!document.getElementById(pid)) {
+		document.getElementById('panel4d').appendChild(o4d);
+	}
+}
+</script>
+</body>
+</html>
