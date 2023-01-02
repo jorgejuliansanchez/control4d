@@ -3,72 +3,96 @@
 <style></style>
 </head>
 <body>
-<svg onclick="openFullscreen();" width="64" height="64" viewBox="0 0 128 128">
-<path d="M 83.96875 17.5625 L 83.96875 17.59375 L 76.65625 24.875 L 97.09375 24.96875 L 76.09375 45.96875 L 81.9375 51.8125 L 102.78125 30.9375 L 102.875 51.15625 L 110.15625 43.875 L 110.1875 17.59375 L 83.96875 17.5625 z M 44.125 17.59375 L 17.90625 17.625 L 17.9375 43.90625 L 25.21875 51.1875 L 25.3125 30.96875 L 46.15625 51.8125 L 52 45.96875 L 31 25 L 51.4375 24.90625 L 44.125 17.59375 z M 46.0625 76.03125 L 25.1875 96.875 L 25.09375 76.65625 L 17.8125 83.9375 L 17.8125 110.21875 L 44 110.25 L 51.3125 102.9375 L 30.90625 102.84375 L 51.875 81.875 L 46.0625 76.03125 z M 82 76.15625 L 76.15625 82 L 97.15625 103 L 76.71875 103.0625 L 84.03125 110.375 L 110.25 110.34375 L 110.21875 84.0625 L 102.9375 76.8125 L 102.84375 97 L 82 76.15625 z"></path>
-</svg>
-<svg id="panel4d" style=" outline: black solid 1px; width: 512px; height: 512px;" viewBox="0 0 512 512">
-<text shape-rendering="geometricPrecision" id="__instante" x="2" y="20" style="fill: #958359; stroke: #836d3c; font-family: Verdana; font-size: 20px;">Control4D</text>
-<text shape-rendering="geometricPrecision" id="__intime" x="510" y="20" style="direction: rtl; fill: #958359; stroke: #836d3c; font-family: Verdana; font-size: 20px;">Control4D</text>
- 
+<video id="video" class="rotado" style="background: #D0D0D0 ;width:512px;height:384px;position: absolute; left: 0px; top: 64px;" playsinline="" autoplay=""></video>
+<canvas id="canvas384" class="rotado" width="384px" height="384px" style="position:absolute; left:64px;top:64px;width:384px;height:384px;"></canvas>
+<svg id="hoja4d" style=" outline: rgb(64,64,64) solid 1px;position:absolute; left:0px;top:0px;width:512px;height:512px;" viewBox="0 0 512 512">
+    <defs>
+		<linearGradient id="grado" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>
+			<stop offset="100%" style="stop-color: white;stop-opacity:1"></stop>
+		</linearGradient>
+		<linearGradient id="gradn" gradientTransform="rotate(90)" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>
+			<stop offset="100%" style="stop-color: white;stop-opacity:1"></stop>
+		</linearGradient>
+		<linearGradient id="grads" gradientTransform="rotate(90)" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: white;stop-opacity:1"></stop>                        
+			<stop offset="100%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>                  
+		</linearGradient>                
+		<linearGradient id="grade" x1="0%" y1="0%" x2="100%" y2="0%">                        
+			<stop offset="0%" style="stop-color: white;stop-opacity:1"></stop>                        
+			<stop offset="100%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>                  
+		</linearGradient>                       
+	</defs>
+	<polyline shape-rendering="geometricPrecision" id="__tapao" points="0,0 64,64 64,448 0,512 0,0" style="fill: url(#grado); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapae" points="512,0 448,64 448,448 512,512 512,512" style="fill: url(#grade); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapan" points="0,0 512,0 448,64 64,64 0,0" style="fill: url(#gradn); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapas" points="0,512 64,448 448,448 512,512 0,512" style="fill: url(#grads); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+<text shape-rendering="geometricPrecision" id="__instante" x="2" y="20" style="fill: black; stroke: black; font-family: Verdana; font-size: 20px;">Control4D</text>
+<text shape-rendering="geometricPrecision" id="__intime" x="510" y="20" style="direction: rtl; fill: black; stroke: black; font-family: Verdana; font-size: 20px;">Control4D</text>
 <text shape-rendering="geometricPrecision" id="__temp" x="2" y="40" style="fill: lime; stroke: lime; font-family: Verdana; font-size: 20px;">Temperatura 24°C</text>
 <text shape-rendering="geometricPrecision" id="__hume" x="2" y="60" style="fill: blue; stroke: blue; font-family: Verdana; font-size: 20px;">Humedad Relativa 40%</text>
 <polyline shape-rendering="geometricPrecision" id="linea1" points="" style="fill: none; stroke: lime; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"></polyline>
 <polyline shape-rendering="geometricPrecision" id="linea2" points="" style="fill: none; stroke: blue; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"></polyline>
+<polyline shape-rendering="geometricPrecision" id="__scan" points="256,64 256,448" style="fill: none; stroke: #c237db; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;"></polyline>
+</svg>
+<svg id="panel4d" class="rotado" style=" outline: rgb(64,64,64) solid 1px;position:absolute; left:0px; top:0px; width:512px; height:512px;" viewBox="0 0 512 512">
 </svg>
 <script>
-var elem = document.getElementById("panel4d");
-function openFullscreen() {
-  if (elem.requestFullscreen) { elem.requestFullscreen(); } 
-  else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
-  else if (elem.msRequestFullscreen) { elem.msRequestFullscreen();}
-}
-</script>
-<script>
-function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
-    if ((x1 === x2 && y1 === y2) || (x3 === x4 && y3 === y4)) {return false};
-    denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
-    if (denominator === 0) { return false   };
-    let ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
-    let ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
-    if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {  return false };
-    let x = Math.round(x1 + ua * (x2 - x1));
-    let y = Math.round(y1 + ua * (y2 - y1));
+
+function p4d(x1, y1, x2, y2, x3, y3, x4, y4) {
+	x=Math.round(x1 +  ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)) * (x2 - x1));
+	y=Math.round(y1 +  ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)) * (y2 - y1));
     return  {x, y};
 }
-var inter1=(intersect(512, 512, 0, 256, 0, 512, 512, 0));
-for (var l=512; l>=0 ; l=l-32){
-	var inter4=(intersect(512, 512, 0, 256, l, 512, 256, 256));
-	var inter7=(intersect(l, 512, 256, 256, inter1.x, inter1.y, 512, inter1.y));
+var inter1=(p4d(512, 512, 0, 439, 0, 512, 512, 0));
+for (var l=512; l>=0 ; l=l-16){
+	var inter4=(p4d(512, 512, 0, 439, l, 512, 256, 256));
+	var inter7=(p4d(l, 512, 256, 256, inter1.x, inter1.y, 512, inter1.y));
 	pts=l + ",512 " + inter7.x + "," + inter7.y  ;
 	poli4d('_hh'+l, pts , "fill: none ; stroke: #958359; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;");
-	var inter5=(intersect(512, 512, 256, 256, inter4.x, inter4.y, 512, inter4.y));
-	var inter6=(intersect(0, 512, 256, 256, inter4.x, inter4.y, 0, inter4.y));
+	
+	var inter5=(p4d(512, 512, 256, 256, inter4.x, inter4.y, 512, inter4.y));
+	var inter6=(p4d(0, 512, 256, 256, inter4.x, inter4.y, 0, inter4.y));
 	pts=inter6.x + "," + inter6.y + " " + inter5.x + "," + inter5.y ;
 	poli4d('_h'+l, pts , "fill: none ; stroke: #958359; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;");
 }
+
+var canvas1=document.getElementById("canvas384"); 
+var canvas4d = canvas1.getContext("2d"); 
+//var canvas2 = document.getElementById("canvas64");
+//var canvas24d = canvas2.getContext("2d");
+const video = document.getElementById("video");
+const constraints = { audio: false,video: { width: { ideal: 512 }, height: { ideal: 384 } }};
+var localstream, elId;videoON(); 
+async function videoON() { 
+	try { const stream = await navigator.mediaDevices.getUserMedia(constraints); exitosa(stream);} 
+	catch (e) {                 alert(`navigator.getUserMedia error:${e.toString()}`);}} 
+function exitosa(stream) { window.stream = stream; video.srcObject = stream; localstream = stream;}; 
+function videoOFF(){ video.pause();  video.currentTime = 0; localstream.getTracks()[0].stop(); } 
+var canvas384_2d = document.getElementById("canvas384").getContext("2d");
+videoON();
 elId="";
 datos=[];
 function detectar(){try {pulso();elId = window.requestAnimationFrame(detectar);}catch (e) { alert(`Error en detección:${e.toString()}`)}}
-var j=171, k=256, pts1="", pts2="",pul=0;
+var j=449, k=256, pts1="", pts2="",pul=0;
 function pulso(){
+	canvas384_2d.drawImage(video,64,0,384,384,0, 0, 384, 384); 
     var registro = new Date;	   
     var instante=registro.getFullYear() + ' ' + ('0' + (registro.getMonth()+1)).slice(-2) + ' ' + ('0' + registro.getDate()).slice(-2) ;	    
     instante+=" "+('0' + (registro.getHours())).slice(-2) +  ' ' + ('0' + registro.getMinutes()).slice(-2) + ' ' + ('0' + registro.getSeconds()).slice(-2) + ' ' + ('00' + registro.getMilliseconds()).slice(-3);
 	document.getElementById("__instante").innerHTML = instante;
 	pul++;
 	document.getElementById("__intime").innerHTML = pul;
-	j=j+1; 
-	if (j > 341) {
-		//mueve x en la linea
-		j=171;
-		pts1="";pts2="";
-		//window.cancelAnimationFrame(elId);
-		return;
-	}
-	k= parseInt(Math.random() * (341 - 171) + 171);
+	j=j+8; 
+	if (j > 448) {j=64; pts1="";pts2="";}
+	pts= j +",64 "+ j + ",448" ;
+	document.getElementById('__scan').setAttribute('points', pts);
+	//window.cancelAnimationFrame(elId);
+	k= parseInt(Math.random() * (512 - 448) + 448);
 	document.getElementById("__temp").innerHTML = "Temperatura :" + k + " °C";
 	pts1= pts1 + j +"," + k +" ";
-	k= parseInt(Math.random() * (341 - 171) + 171);
+	k= parseInt(Math.random() * (512 - 448) + 448);
 	document.getElementById("__hume").innerHTML = "Humedad Relativa :" + k + "%";
 	pts2= pts2 + j +"," + k +" ";
 	//console.log(pts);
