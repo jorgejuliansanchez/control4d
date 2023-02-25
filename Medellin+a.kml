@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Medellin+a.kml</name>
+	<StyleMap id="msn_placemark_circle">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_placemark_circle</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_placemark_circle_highlight</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_placemark_circle_highlight">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle_highlight.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>4</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_placemark_circle">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>4</scale>
+		</LabelStyle>
+	</Style>
+	<Placemark id="default_starting_location">
+		<name>Medellin+</name>
+		<visibility>0</visibility>
+		<LookAt>
+			<longitude>-75.48209093632794</longitude>
+			<latitude>6.233998966090471</latitude>
+			<altitude>0</altitude>
+			<heading>0.6430901821571181</heading>
+			<tilt>70.72121930424791</tilt>
+			<range>82990.00837963945</range>
+			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+		</LookAt>
+		<styleUrl>#msn_placemark_circle</styleUrl>
+		<Point>
+			<coordinates>-75.48209093632794,6.233998966090471,0</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>

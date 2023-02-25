@@ -1,0 +1,1 @@
+https://paraglidinglogbook.com/simulator/sim.php?type=custom&takeoffdirection=0&windspeed=15&winddirection=0&startlat=5.804719&startlon=-75.776276&startday=32&starttime=660

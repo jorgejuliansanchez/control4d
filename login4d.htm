@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login4D</title>
+    <style>
+    .rotado  {transform: rotateY(180deg); -webkit-transform:rotateY(180deg); -moz-transform:rotateY(180deg);}
+    </style>
+	<script src="face-api.js"></script>
+</head>
+<body style="margin: 0; padding: 0; text-align: center;">
+<video  id="video"      class="rotado"                              style="display: none; background: black; width:512px; height:384px; position:absolute;left: 0;right: 0;top: 64px;margin: 0 auto;" playsinline autoplay ></video>
+<canvas id='canvas384' class="rotado" width='384px' height='384px' style="display: block; background: black; width:384px; height:384px; position:absolute; left: 0px; top:64px; right: 0; margin: 0 auto; "></canvas>
+<svg    id="panel4d"    class="rotado" viewBox="0 0 512 512"        style="display: block; width:512px; height:512px; position:absolute; left: 0;right: 0;top: 0px; margin: 0 auto; outline: silver solid 1px; "></svg>
+<svg    id="hoja4d"                    viewBox="0 0 512 512"        style="display: block; width:512px;height:512px;position:absolute;left: 0;right: 0;top: 0px;margin: 0 auto;outline: silver solid 1px; ">
+    <defs>
+		<linearGradient id="grado" x1="100%" y1="0%" x2="0%" y2="0%">
+			<stop offset="0%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>
+			<stop offset="100%" style="stop-color: white;stop-opacity:1"></stop>
+		</linearGradient>
+		<linearGradient id="gradn" gradientTransform="rotate(90)" x1="100%" y1="0%" x2="0%" y2="0%">
+			<stop offset="0%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>
+			<stop offset="100%" style="stop-color: white;stop-opacity:1"></stop>
+		</linearGradient>
+		<linearGradient id="grads" gradientTransform="rotate(90)" x1="100%" y1="0%" x2="0%" y2="0%">
+			<stop offset="0%" style="stop-color: white;stop-opacity:1"></stop>                        
+			<stop offset="100%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>                  
+		</linearGradient>                
+		<linearGradient id="grade" x1="100%" y1="0%" x2="0%" y2="0%">                        
+			<stop offset="0%" style="stop-color: white;stop-opacity:1"></stop>                        
+			<stop offset="100%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>                  
+		</linearGradient>                       
+	</defs>
+	<polyline shape-rendering="geometricPrecision" id="__tapao" points="0,0 64,64 64,448 0,512 0,0" style="fill: url(#grado); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapae" points="512,0 448,64 448,448 512,512 512,512" style="fill: url(#grade); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapan" points="0,0 512,0 448,64 64,64 0,0" style="fill: url(#gradn); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapas" points="0,512 64,448 448,448 512,512 0,512" style="fill: url(#grads); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__scan" points="256,64 256,448" style="fill: none; stroke: #c237db; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;"></polyline>
+</svg>
+<script>
+var canvas1=document.getElementById("canvas384"); 
+var canvas4d = canvas1.getContext("2d");
+const video = document.getElementById('video');
+const constraints = { audio: false,video: { width: { ideal: 512 }, height: { ideal: 384 } }};
+var localstream, elId;
+async function videoON() {        
+	try {                 
+		const stream = await navigator.mediaDevices.getUserMedia(constraints);                 
+		exitosa(stream);         
+	} catch (e) {                 
+		alert(`navigator.getUserMedia error:${e.toString()}`);            
+	}
+}
+function exitosa(stream) { 
+	window.stream = stream; video.srcObject = stream; localstream = stream;
+}
+function detectar(){
+	try {pulso();
+		elId = window.requestAnimationFrame(detectar);
+	}catch (e) { 
+		alert(`Error en detección:${e.toString()}`)
+	}
+}
+var puntos="255,448 255,399 255,352 256,304 256,272 256,240 256,204 256,160 209,161 161,174 133,208 126,256 133,208 161,174 209,161 256,160 303,163 350,176 379,205 385,256 379,205 350,176 303,163 256,160 256,111 256,64 208,68 160,112 135,160 128,208 126,256 132,303 150,352 177,399 208,425 255,448 304,424 334,398 366,352 380,304 385,256 384,208 376,160 352,112 303,69 256,64";
+var estilo="fill: none; stroke: #FF0000; stroke-width: 1; stroke-linecap: round;stroke-linejoin: round;";
+poli4d("__juli4", puntos, estilo) ;
+var j=56, dir=0,lat=0, lon=0;
+videoON();
+faceapi.nets.tinyFaceDetector.loadFromUri();
+detectar();
+panel(); window.addEventListener('resize', function(event){panel();}); 
+function panel(){ 
+    var lado, resto, pan, id; 
+    var ancho = Math.max(document.documentElement.clientWidth, window.innerWidth);    
+    var alto =  Math.max(document.documentElement.clientHeight, window.innerHeight);   
+    if (ancho>alto){
+        lado=alto; 
+        resto=ancho-lado;
+        pan="HOR";
+    } else {
+        lado=ancho; 
+        resto=alto-lado;
+        pan="VER";
+    } 	    
+    document.getElementById('canvas384').setAttribute('style', 'background: black; position:absolute; left: 0;right: 0; margin: 0 auto; top:'+ Math.round(lado*64/512) +'px; width:'+ Math.round(lado*384/512) +'px; height:'+ Math.round(lado*384/512) +'px;');
+    document.getElementById('panel4d').setAttribute('style', ' display: block; position:absolute; left: 0;right: 0;top: 0px; margin: 0 auto; outline: silver solid 1px; width:'+lado+'px; height:'+lado+'px;');
+    document.getElementById('hoja4d').setAttribute('style', ' display: block; position:absolute; left: 0;right: 0;top: 0px; margin: 0 auto; outline: silver solid 1px; width:'+lado+'px;height:'+lado+'px;');
+}
+
+
+function pulso(){
+ 	canvas4d.drawImage(video,64,0,384,384,0, 0, 384, 384);
+	
+	if (dir==0){j=j+8; if (j > 448) {dir=1;} }
+	if (dir==1){j=j-8; if (j < 64 ) {dir=0;} }
+	pts= j +",64 "+ j + ",448" ;
+	document.getElementById('__scan').setAttribute('points', pts);
+
+	//postea('cara4dNeutra');
+}
+function postea(nombre){
+ 	canvas4d.drawImage(video,64,0,384,384,0, 0, 384, 384);   
+    var canvasData = canvas1.toDataURL("image/png");;
+    var registro = new Date;	   
+    var instante=registro.getFullYear() + ' ' + ('0' + (registro.getMonth()+1)).slice(-2) + ' ' + ('0' + registro.getDate()).slice(-2) ;	    
+    instante+=" "+('0' + (registro.getHours())).slice(-2) +  ' ' + ('0' + registro.getMinutes()).slice(-2) + ' ' + ('0' + registro.getSeconds()).slice(-2) + ' ' + ('00' + registro.getMilliseconds()).slice(-3);	    
+    var data = "<html><head><title>"+ nombre +"</title>";	    
+    data += "<meta name='Autor' content='registro4d' />";	    
+    data += "<meta name='Topico' content='Seguridad' />";	    
+    data += "<meta name='Entidad' content='Medellin4D' />";	    
+    data += "<meta name='lat' content='"+ lat + "' />";	    
+    data += "<meta name='lon' content='"+ lon + "' />";	    
+    data += "<meta name='alt' content='none' />";	    
+    data += "<meta name='tim' content='"+ instante + "' />";	    
+    data += "</head><body style='margin:0;padding:0;'><svg style='position:absolute; left:0px;top:0px;width:512px;height:512px;' id='panel4d'>";	    
+    data += document.getElementById('panel4d').innerHTML.trim();	    data += "</svg></body></html>"; 
+    //var nodo="https://www.planeta4d.com/";
+    var nodo="http://localhost:3000/";
+    var servicio="postear"
+    theUrl=nodo+servicio;
+    parametros="data="+data+"&nombre=" + nombre + instante + "&imagen="+canvasData;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", theUrl, true);
+    xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xmlHttp.onreadystatechange = function() {  
+    if (xmlHttp.readyState == 4 && xmlHttp.status == 200)  { 
+        rta=xmlHttp.responseText;
+        //text4d('puntaje0', 4, 45 ,'fill: #000000; stroke: #000000;font-family:monospace;font-size:16px', rta ); 
+    }
+    }
+    xmlHttp.send(parametros);
+}
+const ubica = () => {
+	if (!"geolocation" in navigator) {}
+	const onUbicacionConcedida = ubicacion => {
+        lat= ubicacion.coords.latitude;
+        lon= ubicacion.coords.longitude;
+	}
+ 	const onErrorDeUbicacion = err => {
+
+	}
+	const opcionesDeSolicitud = {
+		enableHighAccuracy: true,  
+		maximumAge: 0,  
+		timeout: 5000  
+	};
+	navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud);
+};
+ubica();
+function poli4d(pid, pts, sty) {
+    if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){    
+        var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline");o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid);}     o4d.setAttribute("points", pts); if (sty !== " ") {o4d.setAttribute("style", sty);} if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d); } 
+    }
+}
+function text4d(pid, px, py, sty, txt) {
+var o4d;if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "text");o4d.setAttribute("shape-rendering", "geometricPrecision");o4d.setAttribute("id", pid);}o4d.setAttribute("x", px);o4d.setAttribute("y", py);if (sty !== " ") {o4d.setAttribute("style", sty);}o4d.textContent = txt;if (!document.getElementById(pid)) {document.getElementById("hoja4d").appendChild(o4d);}
+}
+function circ4d(pid, pcx, pcy, pra, sty) {
+	var o4d;
+	if (document.getElementById(pid)) {
+		o4d = document.getElementById(pid);
+	} else {
+		o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+		o4d.setAttribute('shape-rendering', 'geometricPrecision');
+		o4d.setAttribute('id', pid);
+	}
+	o4d.setAttribute('cx', pcx);
+	o4d.setAttribute('cy', pcy);
+	o4d.setAttribute('r', pra);
+	if (sty !== ' ') {
+		o4d.setAttribute('style', sty);
+	}
+	if (!document.getElementById(pid)) {
+		document.getElementById('panel4d').appendChild(o4d);
+	}
+}
+</script>    
+</body>
+</html>

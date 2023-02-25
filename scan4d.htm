@@ -1,0 +1,38 @@
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head><title>scan4D</title>
+<style></style>
+</head>
+<body>
+<svg id="panel4d" style=" outline: black solid 1px; width: 512px; height: 512px;" viewBox="0 0 512 512">
+
+<text shape-rendering="geometricPrecision" id="__instante" x="2" y="510" style="fill: none; stroke: black; font-family: monospace; font-size: 20px;">Control4D</text>
+<text shape-rendering="geometricPrecision" id="__intime" x="510" y="510" style="direction: rtl; fill: none; stroke: black; font-family: monospace; font-size: 20px;">Control4D</text>
+<polyline shape-rendering="geometricPrecision" id="__scan" points="256,2 256,510" style="fill: none; stroke: #c237db; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;"></polyline>
+</svg>
+<script>
+var j=256, pts1="", pul=0;
+function detectar(){
+	try {
+		pulso();
+		elId = window.requestAnimationFrame(detectar);
+	}
+	catch (e) {
+		alert(`Error en detección:${e.toString()}`)
+	}
+}
+function pulso(){
+    var registro = new Date;	   
+    var instante=registro.getFullYear() + ' ' + ('0' + (registro.getMonth()+1)).slice(-2) + ' ' + ('0' + registro.getDate()).slice(-2) ;	    
+    instante+=" "+('0' + (registro.getHours())).slice(-2) +  ' ' + ('0' + registro.getMinutes()).slice(-2) + ' ' + ('0' + registro.getSeconds()).slice(-2) + ' ' + ('00' + registro.getMilliseconds()).slice(-3);
+	document.getElementById("__instante").innerHTML = instante;
+	pul++;
+	document.getElementById("__intime").innerHTML = pul;
+	j=j+1;
+	if (j > 512) {j=1}
+	pts1= j +",2 "+ j + ",510" ;
+	document.getElementById('__scan').setAttribute('points', pts1);
+}
+detectar();
+</script>
+</body>
+</html>

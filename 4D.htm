@@ -1,0 +1,55 @@
+<html>
+<head>
+	<title>4a Dimension</title>
+</head>
+<body>
+	<h1 id="vueltas">Vueltas</h1>
+<label for="year">Año:</label>
+<select id="year" name="year">
+    <script>
+        const currentYear = new Date().getFullYear();
+        for (let year = 1900; year <= currentYear; year++) {
+            document.write("<option value='" + year + "'>" + year + "</option>");
+        }
+    </script>
+</select>
+<label for="month">Mes:</label>
+<select id="month" name="month">
+    <script>
+        const monthNames = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+        for (let month = 1; month <= 12; month++) {
+            document.write("<option value='" + month + "'>" + monthNames[month - 1] + "</option>");
+        }
+    </script>
+</select>
+<label for="day">Día:</label>
+<select id="day" name="day">
+    <script>
+        for (let day = 1; day <= 31; day++) {
+            document.write("<option value='" + day + "'>" + day + "</option>");
+        }
+    </script>
+</select>
+<script>
+var apidata=document.getElementById('vueltas');
+var servicio='https://app9000doc-001-site1.atempurl.com/vueltas'; 
+var servicio='http://localhost:3000/vueltas'; 
+var xmlHttp = new XMLHttpRequest(); 
+xmlHttp.open('GET', servicio, true); 
+xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'); 
+xmlHttp.onreadystatechange = function() { 
+	if (xmlHttp.readyState == 4 && xmlHttp.status == 200)  { 
+		apidata.textContent = xmlHttp.responseText; 
+	} else { 
+		apidata.textContent=xmlHttp.status +'...'; 
+		if(xmlHttp.status==404) { apidata.textContent='Servicio no encontrado .!'; } 
+		if(xmlHttp.status==0)   { apidata.textContent='Sin conexión .!'; }
+	}
+};  
+xmlHttp.send();	
+</script>
+</body>
+</html>

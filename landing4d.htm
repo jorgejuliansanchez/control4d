@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing4D</title>
+</head>
+<body style="margin: 0; padding: 0; text-align: center;">
+<svg    id="panel4d"                   viewBox="0 0 512 512"        style="display: block; width:512px; height:512px; position:absolute; left: 0;right: 0;top: 0px; margin: 0 auto; outline: blue solid 1px; "></svg>
+<svg    id="hoja4d"                    viewBox="0 0 512 512"        style="display: block; width:512px;height:512px;position:absolute;left: 0;right: 0;top: 0px;margin: 0 auto;outline: blue solid 1px; ">
+    <defs>
+		<linearGradient id="grado" x1="100%" y1="0%" x2="0%" y2="0%">
+			<stop offset="0%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>
+			<stop offset="100%" style="stop-color: white;stop-opacity:1"></stop>
+		</linearGradient>
+		<linearGradient id="gradn" gradientTransform="rotate(90)" x1="100%" y1="0%" x2="0%" y2="0%">
+			<stop offset="0%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>
+			<stop offset="100%" style="stop-color: white;stop-opacity:1"></stop>
+		</linearGradient>
+		<linearGradient id="grads" gradientTransform="rotate(90)" x1="100%" y1="0%" x2="0%" y2="0%">
+			<stop offset="0%" style="stop-color: white;stop-opacity:1"></stop>                        
+			<stop offset="100%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>                  
+		</linearGradient>                
+		<linearGradient id="grade" x1="100%" y1="0%" x2="0%" y2="0%">                        
+			<stop offset="0%" style="stop-color: white;stop-opacity:1"></stop>                        
+			<stop offset="100%" style="stop-color: rgb(64,64,64);stop-opacity:1"></stop>                  
+		</linearGradient>                       
+	</defs>
+	<polyline shape-rendering="geometricPrecision" id="__tapao" points="0,0 64,64 64,448 0,512 0,0" style="fill: url(#grado); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapae" points="512,0 448,64 448,448 512,512 512,512" style="fill: url(#grade); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapan" points="0,0 512,0 448,64 64,64 0,0" style="fill: url(#gradn); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__tapas" points="0,512 64,448 448,448 512,512 0,512" style="fill: url(#grads); stroke: black; stroke-width: 0.3; stroke-linecap: round;stroke-linejoin: round;"></polyline>
+	<text shape-rendering="geometricPrecision" id="__latlon" x="214" y="266" style="fill: black; stroke: none;font-family:monospace;font-size:10px">Geoubicando...</text>
+	<circle shape-rendering="geometricPrecision" id="__me" cx="256" cy="256" r="4" style="fill: rgb(34,61,132); stroke: rgb(144,189,255); stroke-width: 1; stroke-linecap: round;stroke-linejoin: round;">
+	</circle>
+	<polyline shape-rendering="geometricPrecision" id="__centrovertical" points="256,0 256,512" style="fill: none; stroke: red; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"></polyline>
+	<polyline shape-rendering="geometricPrecision" id="__centrohorizontal" points="0,256 512,256" style="fill: none; stroke: red; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"></polyline>
+
+</svg>
+<script>
+var factor4d=512/180;
+for (x=0;x<512;x=x+factor4d*10){
+	pruta=Math.round(x) +",0 "+Math.round(x)+",512";
+	sty="fill: none; stroke: blue; stroke-width: 0.5; stroke-dasharray='5, 5'; stroke-linecap: round; stroke-linejoin: round;";
+	poli4d("g"+ Math.round(x),pruta,sty);
+}
+for (y=0;y<512;y=y+factor4d*10){
+	pruta=" 0," + Math.round(y) +" 512," + Math.round(y);
+	sty="fill: none; stroke: blue; stroke-width: 0.5; stroke-dasharray='5, 5'; stroke-linecap: round; stroke-linejoin: round;";
+	poli4d("gy"+ Math.round(y),pruta,sty);
+	}
+
+//var andes4d="-81.800,-5.700,0 -62.600,-5.700,0 -62.600,13.500,0 -81.800,13.500,0"; pintar(andes4d,"Andes4D");
+    factor4d = 0.512 / 512 ;
+	var medellin4d = "-75.740,5.926,0 -75.228,5.926,0 -75.228,6.438,0 -75.740,6.438,0 -75.740,5.926,0"; pintar(medellin4d, "Medellin4D");
+function pintar(pcad,pnom){
+	var nodos = pcad.split(" ");
+	var pruta = "",punto0="";
+	for (var i=0; i< nodos.length;i++){
+		var coord=nodos[i].split(",");
+		lon=Math.round(256 + coord[0]*factor4d);
+		lat=Math.round(256 - coord[1]*factor4d);
+		if (punto0==""){punto0=lon +"," + lat}
+		pruta=pruta + lon +"," + lat + " ";
+	};
+	pruta=pruta + punto0;
+	sty="fill: none; stroke: green; stroke-width: 1; stroke-dasharray='5, 5'; stroke-linecap: round; stroke-linejoin: round;";
+	poli4d(pnom,pruta,sty);
+}
+
+const ubica = () => {
+	if (!"geolocation" in navigator) {}
+	const onUbicacionConcedida = ubicacion => {
+        lat= ubicacion.coords.latitude;
+		lon= ubicacion.coords.longitude;
+		txt=Math.round(lon*1000)/1000 +','+ Math.round(lat*1000)/1000;
+		
+		lon=Math.round(512 + lon*factor4d);
+		lat=Math.round(256 - lat*factor4d);
+		sty="fill: none; stroke: red; stroke-width: 1; stroke-linecap: round;stroke-linejoin: round;";
+		circ4d("__me", lon, lat, 1, sty);
+		sty="fill: black; stroke: none;font-family:monospace;font-size:10px";
+		text4d("__latlon", (lon-42), (lat+10), sty, txt)
+	}
+ 	const onErrorDeUbicacion = err => {
+		sty="fill: black; stroke: none;font-family:monospace;font-size:10px";
+		text4d("__latlon", (256-42), (256+10), sty, err)
+	}
+	const opcionesDeSolicitud = {
+		enableHighAccuracy: true,  
+		maximumAge: 0,  
+		timeout: 5000  
+	};
+	navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud);
+};
+panel(); window.addEventListener('resize', function(event){panel();}); 
+function panel(){ 
+	ubica();
+    var lado, resto, pan, id; 
+    var ancho = Math.max(document.documentElement.clientWidth, window.innerWidth);    
+    var alto =  Math.max(document.documentElement.clientHeight, window.innerHeight);   
+    if (ancho>alto){
+        lado=alto; 
+        resto=ancho-lado;
+        pan="HOR";
+    } else {
+        lado=ancho; 
+        resto=alto-lado;
+        pan="VER";
+    } 	    
+    document.getElementById('panel4d').setAttribute('style', ' display: block; position:absolute; left: 0;right: 0;top: 0px; margin: 0 auto; outline: blue solid 1px; width:'+lado+'px; height:'+lado+'px;');
+    document.getElementById('hoja4d').setAttribute('style', ' display: block; position:absolute; left: 0;right: 0;top: 0px; margin: 0 auto; outline: blue solid 1px; width:'+lado+'px;height:'+lado+'px;');
+}
+
+
+function poli4d(pid, pts, sty) {
+    if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){    
+        var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline");o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid);}     o4d.setAttribute("points", pts); if (sty !== " ") {o4d.setAttribute("style", sty);} if (!document.getElementById(pid)) {document.getElementById("hoja4d").appendChild(o4d); } 
+    }
+}
+function text4d(pid, px, py, sty, txt) {
+var o4d;if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "text");o4d.setAttribute("shape-rendering", "geometricPrecision");o4d.setAttribute("id", pid);}o4d.setAttribute("x", px);o4d.setAttribute("y", py);if (sty !== " ") {o4d.setAttribute("style", sty);}o4d.textContent = txt;if (!document.getElementById(pid)) {document.getElementById("hoja4d").appendChild(o4d);}
+}
+function circ4d(pid, pcx, pcy, pra, sty) {
+	var o4d;
+	if (document.getElementById(pid)) {
+		o4d = document.getElementById(pid);
+	} else {
+		o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+		o4d.setAttribute('shape-rendering', 'geometricPrecision');
+		o4d.setAttribute('id', pid);
+	}
+	o4d.setAttribute('cx', pcx);
+	o4d.setAttribute('cy', pcy);
+	o4d.setAttribute('r', pra);
+	if (sty !== ' ') {
+		o4d.setAttribute('style', sty);
+	}
+	if (!document.getElementById(pid)) {
+		document.getElementById('hoja4d').appendChild(o4d);
+	}
+}
+</script>    
+</body>
+</html>

@@ -1,0 +1,2 @@
+http://tools.wmflabs.org/geohack/geohack.php?language=es&pagename=Fredonia_(Colombia)&params=5.9266666666667_N_-75.673888888889_E_type:city
+Fredonia 5.926667, -75.673889, 
